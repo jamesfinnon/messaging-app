@@ -7,14 +7,13 @@ public class Message {
 	private boolean read;
 	private Instant timeOfMessage;
 	
-	
 	/**
 	 * formats the time inputed to hours:minutes:seconds
 	 * taken from the emergency system assignment
 	 * 
 	 * @author jamesfinnon
 	 * @param time
-	 * @return
+	 * @return formatted time
 	 */
 	public String formatTime(Instant time) {
     	DateTimeFormatter formatter =
@@ -24,6 +23,7 @@ public class Message {
     	return formatter.format(time);
     }	
 	
+	// getters and setters for fields
 	public String getContent() {
 		return content;
 	}
