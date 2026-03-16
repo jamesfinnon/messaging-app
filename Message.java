@@ -2,6 +2,11 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * class for individual messages within a chat
+ * 
+ * @author jamesfinnon
+ */
 public class Message {
 	private String content;
 	private boolean read;
