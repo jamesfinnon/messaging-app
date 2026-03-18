@@ -7,24 +7,5 @@ public class Contact {
 	private UUID id;
 	private URL profilePicture;
 	
-	// getters and setters
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public UUID getId() {
-		return id;
-	}
-	public void setId(UUID id) {
-		this.id = id;
-	}
-	public URL getProfilePicture() {
-		return profilePicture;
-	}
-	public void setProfilePicture(URL profilePicture) {
-		this.profilePicture = profilePicture;
-	}
 	
 }
