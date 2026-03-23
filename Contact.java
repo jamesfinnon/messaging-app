@@ -8,11 +8,15 @@ import java.util.UUID;
  * Stores contact details including name, phone number, unique ID, profile picture, and date added.
  */
 public class Contact {
+	// ============ Fields ============
+
 	private String name;
-	private String number; // has to be string as can start with 0, or have code like +44(Country code)
+	private String number;
 	private UUID id;
 	private URL profilePicture;
-	private Instant dateAdded; // tracks when contact was added for sorting purposes
+	private Instant dateAdded;
+
+	// ============ Constructors ============
 
 	/**
 	 * Creates a new Contact with the specified details.
@@ -251,14 +255,7 @@ public class Contact {
 	 * @return true if the name is valid, false otherwise
 	 */
 	public static boolean isValidName(String name) {
-		try {
-			if (name == null || name.trim().isEmpty() || name.length() > 100) {
-				return false;
-			}
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
+		return name != null && !name.trim().isEmpty() && name.length() <= 100;
 	}
 
 	/**
@@ -268,14 +265,10 @@ public class Contact {
 	 * @return true if the phone number is valid, false otherwise
 	 */
 	public static boolean isValidPhoneNumber(String number) {
-		try {
-			if (number == null || number.trim().isEmpty() || number.length() > 20) {
-				return false;
-			}
-			return number.matches("[0-9+\\-()\\s]+");
-		} catch (Exception e) {
+		if (number == null || number.trim().isEmpty() || number.length() > 20) {
 			return false;
 		}
+		return number.matches("[0-9+\\-()\\s]+");
 	}
 
 	// ============ Search & Query Support ============
@@ -283,18 +276,16 @@ public class Contact {
 	/**
 	 * Checks if this contact matches the given keyword.
 	 * Performs case-insensitive search across name and phone number.
-	 * Useful for FR18 (search all chat names) and contact finding.
 	 *
 	 * @param keyword the search keyword
-	 * @return true if the contact's name or number contains the keyword (case-insensitive), false otherwise
+	 * @return true if the contact's name or number contains the keyword, false otherwise
 	 */
 	public boolean matches(String keyword) {
 		if (keyword == null || keyword.trim().isEmpty()) {
 			return false;
 		}
 		String lowerKeyword = keyword.toLowerCase();
-		return name.toLowerCase().contains(lowerKeyword) || 
-		       number.toLowerCase().contains(lowerKeyword);
+		return name.toLowerCase().contains(lowerKeyword) || number.toLowerCase().contains(lowerKeyword);
 	}
 
 	/**
@@ -302,15 +293,15 @@ public class Contact {
 	 * Performs case-insensitive regex search across name and phone number.
 	 *
 	 * @param pattern the regex pattern to match
-	 * @return true if the contact's name or number matches the pattern (case-insensitive), false otherwise
+	 * @return true if the contact's name or number matches the pattern, false otherwise
 	 */
 	public boolean matchesRegex(String pattern) {
 		if (pattern == null || pattern.trim().isEmpty()) {
 			return false;
 		}
 		try {
-			return name.matches("(?i)" + pattern) || 
-			       number.matches("(?i)" + pattern);
+			String caseInsensitivePattern = "(?i)" + pattern;
+			return name.matches(caseInsensitivePattern) || number.matches(caseInsensitivePattern);
 		} catch (Exception e) {
 			return false;
 		}
@@ -455,133 +446,3 @@ public class Contact {
 		}
 	}
 }
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof Contact)) return false;
-		Contact contact = (Contact) o;
-		return Objects.equals(id, contact.id);
-	}
-
-	/**
-	 * Returns a hash code value for the contact based on its ID.
-	 *
-	 * @return the hash code value
-	 */
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
-
-	/**
-	 * Returns a string representation of the contact.
-	 *
-	 * @return a string representation including all contact details
-	 */
-	@Override
-	public String toString() {
-		return "Contact{" +
-				"name='" + name + '\'' +
-				", number='" + number + '\'' +
-				", id=" + id +
-				", profilePicture=" + profilePicture +
-				", dateAdded=" + dateAdded +
-				'}';
-	}
-
-	// ============ Builder Pattern ============
-
-	/**
-	 * Builder class for creating Contact instances with optional parameters.
-	 * Makes construction more flexible, especially for loading from disk.
-	 * 
-	 * Usage:
-	 * Contact contact = new Contact.Builder("John Doe")
-	 *     .withNumber("+44123456789")
-	 *     .withId(UUID.randomUUID())
-	 *     .withProfilePicture(profileUrl)
-	 *     .withDateAdded(Instant.now())
-	 *     .build();
-	 */
-	public static class Builder {
-		private String name;
-		private String number;
-		private UUID id;
-		private URL profilePicture;
-		private Instant dateAdded;
-
-		/**
-		 * Creates a new Builder with required name parameter.
-		 *
-		 * @param name the contact's name (required)
-		 */
-		public Builder(String name) {
-			this.name = name;
-		}
-
-		/**
-		 * Sets the phone number.
-		 *
-		 * @param number the contact's phone number
-		 * @return this Builder instance for method chaining
-		 */
-		public Builder withNumber(String number) {
-			this.number = number;
-			return this;
-		}
-
-		/**
-		 * Sets the contact ID.
-		 *
-		 * @param id the unique identifier
-		 * @return this Builder instance for method chaining
-		 */
-		public Builder withId(UUID id) {
-			this.id = id;
-			return this;
-		}
-
-		/**
-		 * Sets the profile picture URL.
-		 *
-		 * @param profilePicture the URL to the profile picture
-		 * @return this Builder instance for method chaining
-		 */
-		public Builder withProfilePicture(URL profilePicture) {
-			this.profilePicture = profilePicture;
-			return this;
-		}
-
-		/**
-		 * Sets the date when the contact was added.
-		 *
-		 * @param dateAdded the instant when added
-		 * @return this Builder instance for method chaining
-		 */
-		public Builder withDateAdded(Instant dateAdded) {
-			this.dateAdded = dateAdded;
-			return this;
-		}
-
-		/**
-		 * Builds and returns the Contact instance.
-		 * Name and ID are required; other fields are optional.
-		 *
-		 * @return a new Contact instance
-		 * @throws NullPointerException if name or id is not set
-		 * @throws IllegalArgumentException if name or number fails validation
-		 */
-		public Contact build() {
-			if (name == null) {
-				throw new NullPointerException("Name is required for building a Contact");
-			}
-			if (id == null) {
-				throw new NullPointerException("ID is required for building a Contact");
-			}
-			if (number == null) {
-				throw new NullPointerException("Number is required for building a Contact");
-			}
-			return new Contact(this);
-		}
-	}
-}
-	
