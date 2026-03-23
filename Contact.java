@@ -5,10 +5,15 @@ import java.util.UUID;
 
 /**
  * Represents a contact in the messaging application.
- * Stores contact details including name, phone number, unique ID, profile picture, and date added.
+ * 
+ * Stores contact details including name, phone number, unique ID, profile picture, 
+ * and date added. Provides validation, formatting, and search functionality.
+ *
+ * @author Sameer Kaushal
  */
 public class Contact {
-	// ============ Fields ============
+
+	// ============ FIELDS ============
 
 	private String name;
 	private String number;
@@ -16,7 +21,7 @@ public class Contact {
 	private URL profilePicture;
 	private Instant dateAdded;
 
-	// ============ Constructors ============
+	// ============ CONSTRUCTORS ============
 
 	/**
 	 * Creates a new Contact with the specified details.
@@ -59,6 +64,8 @@ public class Contact {
 
 	/**
 	 * Private constructor used by the Builder pattern.
+	 *
+	 * @param builder the Builder instance with contact data
 	 */
 	private Contact(Builder builder) {
 		this.name = validateName(builder.name);
@@ -68,7 +75,7 @@ public class Contact {
 		this.dateAdded = builder.dateAdded != null ? builder.dateAdded : Instant.now();
 	}
 
-	// ============ Getters ============
+	// ============ GETTERS ============
 
 	/**
 	 * Gets the contact's name.
@@ -116,7 +123,7 @@ public class Contact {
 		return dateAdded;
 	}
 
-	// ============ Setters ============
+	// ============ SETTERS ============
 
 	/**
 	 * Sets the contact's name.
@@ -160,7 +167,7 @@ public class Contact {
 		this.dateAdded = Objects.requireNonNull(dateAdded, "Date added cannot be null");
 	}
 
-	// ============ Formatted Output Methods ============
+	// ============ FORMATTED OUTPUT ============
 
 	/**
 	 * Returns a formatted string representation of the contact for UI display.
@@ -202,7 +209,7 @@ public class Contact {
 		return name + "\n" + number;
 	}
 
-	// ============ Validation Methods ============
+	// ============ VALIDATION METHODS ============
 
 	/**
 	 * Validates the contact's name.
@@ -271,7 +278,7 @@ public class Contact {
 		return number.matches("[0-9+\\-()\\s]+");
 	}
 
-	// ============ Search & Query Support ============
+	// ============ SEARCH & QUERY SUPPORT ============
 
 	/**
 	 * Checks if this contact matches the given keyword.
@@ -307,7 +314,7 @@ public class Contact {
 		}
 	}
 
-	// ============ Object Methods ============
+	// ============ OBJECT METHODS ============
 
 	/**
 	 * Compares this contact with another object for equality.
@@ -350,19 +357,21 @@ public class Contact {
 				'}';
 	}
 
-	// ============ Builder Pattern ============
+	// ============ BUILDER PATTERN ============
 
 	/**
-	 * Builder class for creating Contact instances with optional parameters.
-	 * Makes construction more flexible, especially for loading from disk.
-	 * 
-	 * Usage:
+	 * Builder class for creating Contact instances with flexible parameters.
+	 * Makes construction more flexible, especially useful for loading from disk.
+	 *
+	 * Usage Example:
+	 * <pre>
 	 * Contact contact = new Contact.Builder("John Doe")
 	 *     .withNumber("+44123456789")
 	 *     .withId(UUID.randomUUID())
 	 *     .withProfilePicture(profileUrl)
 	 *     .withDateAdded(Instant.now())
 	 *     .build();
+	 * </pre>
 	 */
 	public static class Builder {
 		private String name;
