@@ -9,17 +9,6 @@ import java.util.UUID;
  */
 public class Contact {
 	private String name;
-import java.net.URL;
-import java.time.Instant;
-import java.util.Objects;
-import java.util.UUID;
-
-/**
- * Represents a contact in the messaging application.
- * Stores contact details including name, phone number, unique ID, profile picture, and date added.
- */
-public class Contact {
-	private String name;
 	private String number; // has to be string as can start with 0, or have code like +44(Country code)
 	private UUID id;
 	private URL profilePicture;
