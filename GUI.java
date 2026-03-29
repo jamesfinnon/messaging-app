@@ -12,15 +12,15 @@ public class GUI {
             // put code here that needs to be run on a thread
             public void run() {
                 // call separate method to set up the GUI and run it
-                runProgram();
+                landingPage();
             }
         });
 
     }
 
-    public static void runProgram() {
+    public static void landingPage() {
         //font
-        Font headerFont = new Font("Arial", Font.BOLD, 16);
+        Font headerFont = new Font("Arial", Font.BOLD, 18);
 
 
         String profileName = new String("Faisal S Yero");
@@ -34,17 +34,23 @@ public class GUI {
         //hp
         JPanel headerP = new JPanel();
         headerP.setLayout(new BorderLayout());
-        headerP.setPreferredSize(new Dimension(442, 60));
+        headerP.setPreferredSize(new Dimension(442, 70));
+        headerP.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.LineBorder(Color.BLACK, 1), new javax.swing.border.EmptyBorder(10, 10, 10, 5)));
         
         //lhp
-        JPanel headerLeft = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel headerLeft = new JPanel();
+        headerLeft.setLayout(new BoxLayout(headerLeft, BoxLayout.Y_AXIS));
         JLabel appName = new JLabel("Messages");
         appName.setFont(headerFont);
+        headerLeft.add(Box.createVerticalStrut(3));
         headerLeft.add(appName);
+        headerLeft.add(Box.createVerticalStrut(8));
+        JLabel mainPName = new JLabel("Your name: "+ profileName);
+        headerLeft.add(mainPName);
         headerP.add(headerLeft, BorderLayout.WEST);
         
         //rhp
-        JPanel headerRight = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel headerRight = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
         JButton searchBut = new JButton("Search");
         JButton profileBut = new JButton("Profile");
         JButton contactsBut = new JButton("Contacts");
@@ -53,18 +59,16 @@ public class GUI {
         headerRight.add(contactsBut);
         headerP.add(headerRight, BorderLayout.EAST);
         
-        JLabel mainPName = new JLabel("Your name: " + profileName);
-        headerP.add(mainPName, BorderLayout.SOUTH);
-
         //mp
         JPanel mainP = new JPanel();
         mainP.setLayout(new BorderLayout());
+        mainP.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.LineBorder(Color.BLACK, 1), new javax.swing.border.EmptyBorder(15, 15, 15, 15)));
 
         //fp
         JPanel footerP = new JPanel();
         footerP.setLayout(new BorderLayout());
         footerP.setPreferredSize(new Dimension(442, 60));
-        
+        footerP.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.LineBorder(Color.BLACK, 1), new javax.swing.border.EmptyBorder(5, 5, 5, 5)));
         JButton newChatBut = new JButton("+ New Chat");
         footerP.add(newChatBut, BorderLayout.CENTER);
 
