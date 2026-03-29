@@ -79,4 +79,14 @@ public class GUI {
         window.setVisible(true);
     }
 
+    public static void chatView(JFrame window, JPanel headerP, JPanel headerLeft, JPanel headerRight, JPanel mainP, JPanel footerP) {
+        Font headerFont = new Font("Arial", Font.BOLD, 18);
+        String friend = new String("James Finnon");
+        headerLeft.removeAll();
+        JButton back = new JButton("← Back");
+        headerLeft.add(back);
+        JLabel chatName = new JLabel(friend);
+        chatName.setFont(headerFont);
+        headerLeft.add(chatName);
+    }
 }
