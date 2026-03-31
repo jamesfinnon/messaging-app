@@ -112,6 +112,11 @@ public class GUI {
         //rhp
         JButton searchBut = new JButton("Search");
         JButton profileBut = new JButton("Profile");
+        profileBut.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                profileP(headerL, headerR, footerP);
+            }
+        });
         JButton contactsBut = new JButton("Contacts");
         headerR.add(searchBut);
         headerR.add(profileBut);
@@ -170,6 +175,27 @@ public class GUI {
         cardLayout.show(mainP, "chat");
     }
     
+    public void profileP(JPanel headerL, JPanel headerR, JPanel footerP) {
+        Font headerFont = new Font("Arial", Font.BOLD, 18);
+
+        headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+        headerL.removeAll();
+        headerR.removeAll();
+        footerP.removeAll();
+
+        JButton back = new JButton("← Back");
+        headerL.add(back);
+        JLabel myProfile = new JLabel("My Profile");
+        myProfile.setFont(headerFont);
+        headerL.add(myProfile);
+
+        revNrep(headerL);
+        revNrep(headerR);
+        revNrep(footerP);
+
+        cardLayout.show(mainP, "profile");
+    }
 
     public void revNrep(JPanel panel) {
         panel.revalidate();
