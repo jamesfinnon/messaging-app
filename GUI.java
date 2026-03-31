@@ -3,6 +3,9 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class GUI {  
+    private JFrame window;
+    private CardLayout cardLayout;
+    private JPanel mainP;
     public static void main(String[] args) {
         // use the Swing 'invokeLater' method to create a new
         // Runnable object to run on the EDT
@@ -12,19 +15,14 @@ public class GUI {
             // put code here that needs to be run on a thread
             public void run() {
                 // call separate method to set up the GUI and run it
-                landingPage();
+                new GUI().mainFrame();
             }
         });
 
     }
 
-    public static void landingPage() {
-        //font
-        Font headerFont = new Font("Arial", Font.BOLD, 18);
-
-
-        String profileName = new String("Faisal S Yero");
-        JFrame window = new JFrame();
+    public void mainFrame() {
+        window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setSize(442, 874);
         window.setTitle("Messaging App");
@@ -34,59 +32,147 @@ public class GUI {
         //hp
         JPanel headerP = new JPanel();
         headerP.setLayout(new BorderLayout());
-        headerP.setPreferredSize(new Dimension(442, 70));
+        headerP.setMaximumSize(new Dimension(442, Integer.MAX_VALUE));
         headerP.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.LineBorder(Color.BLACK, 1), new javax.swing.border.EmptyBorder(10, 10, 10, 5)));
-        
+
         //lhp
-        JPanel headerLeft = new JPanel();
-        headerLeft.setLayout(new BoxLayout(headerLeft, BoxLayout.Y_AXIS));
-        JLabel appName = new JLabel("Messages");
-        appName.setFont(headerFont);
-        headerLeft.add(Box.createVerticalStrut(3));
-        headerLeft.add(appName);
-        headerLeft.add(Box.createVerticalStrut(8));
-        JLabel mainPName = new JLabel("Your name: "+ profileName);
-        headerLeft.add(mainPName);
-        headerP.add(headerLeft, BorderLayout.WEST);
-        
+        JPanel headerL = new JPanel();
+        headerL.setLayout(new BoxLayout(headerL, BoxLayout.Y_AXIS));
+        headerP.add(headerL, BorderLayout.WEST);
+
         //rhp
-        JPanel headerRight = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
-        JButton searchBut = new JButton("Search");
-        JButton profileBut = new JButton("Profile");
-        JButton contactsBut = new JButton("Contacts");
-        headerRight.add(searchBut);
-        headerRight.add(profileBut);
-        headerRight.add(contactsBut);
-        headerP.add(headerRight, BorderLayout.EAST);
-        
-        //mp
-        JPanel mainP = new JPanel();
-        mainP.setLayout(new BorderLayout());
-        mainP.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.LineBorder(Color.BLACK, 1), new javax.swing.border.EmptyBorder(15, 15, 15, 15)));
+        JPanel headerR = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+        headerP.add(headerR, BorderLayout.EAST);
 
         //fp
         JPanel footerP = new JPanel();
         footerP.setLayout(new BorderLayout());
         footerP.setPreferredSize(new Dimension(442, 60));
         footerP.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.LineBorder(Color.BLACK, 1), new javax.swing.border.EmptyBorder(5, 5, 5, 5)));
-        JButton newChatBut = new JButton("+ New Chat");
-        footerP.add(newChatBut, BorderLayout.CENTER);
+
+        //mp 
+        JPanel mainP = new JPanel(new CardLayout());
+        mainP.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.LineBorder(Color.BLACK, 1), new javax.swing.border.EmptyBorder(15, 15, 15, 15)));
+
+        //different mps
+        JPanel landingP = new JPanel(new BorderLayout());
+        mainP.add(landingP, "landing");
+        
+        JPanel chatView = new JPanel(new BorderLayout());
+        mainP.add(chatView, "chat");
+        
+        JPanel profilePage = new JPanel(new BorderLayout());
+        mainP.add(profilePage, "profile");
+
+        JPanel contactsPage = new JPanel(new BorderLayout());
+        mainP.add(contactsPage, "contactsP");
+
+        JPanel contactsDet = new JPanel(new BorderLayout());
+        mainP.add(contactsDet, "contactsD");
+
+        JPanel contactsNew = new JPanel(new BorderLayout());
+        mainP.add(contactsNew, "contactsN");
+
+        JPanel searchPage = new JPanel(new BorderLayout());
+        mainP.add(searchPage, "search");
+
+        JPanel newChats = new JPanel(new BorderLayout());
+        mainP.add(newChats, "chatsN");
 
         window.add(headerP, BorderLayout.NORTH);
         window.add(mainP, BorderLayout.CENTER);
         window.add(footerP, BorderLayout.SOUTH);
 
+        landingPage(landingP, headerL, headerR, footerP);
+
         window.setVisible(true);
+        
     }
 
-    public static void chatView(JFrame window, JPanel headerP, JPanel headerLeft, JPanel headerRight, JPanel mainP, JPanel footerP) {
+    public void landingPage(JPanel landingP, JPanel headerL, JPanel headerR, JPanel footerP) {
+        //font
+        Font headerFont = new Font("Arial", Font.BOLD, 18);
+        String profileName = new String("Faisal S Yero");
+
+        headerL.setLayout(new BoxLayout(headerL, BoxLayout.Y_AXIS));
+
+        headerL.removeAll();
+        headerR.removeAll();
+        footerP.removeAll();
+        
+        //lhp
+        JLabel appName = new JLabel("Messages");
+        appName.setFont(headerFont);
+        headerL.add(Box.createVerticalStrut(3));
+        headerL.add(appName);
+        headerL.add(Box.createVerticalStrut(8));
+        JLabel mainPName = new JLabel("Your name: "+ profileName);
+        headerL.add(mainPName);
+        
+        //rhp
+        JButton searchBut = new JButton("Search");
+        JButton profileBut = new JButton("Profile");
+        JButton contactsBut = new JButton("Contacts");
+        headerR.add(searchBut);
+        headerR.add(profileBut);
+        headerR.add(contactsBut);
+        
+        //mp
+        landingP.removeAll();
+        landingP.setLayout(new BorderLayout());
+
+        //fp
+        JButton newChatBut = new JButton("+ New Chat");
+        newChatBut.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                chatViewP(headerL, headerR, footerP);
+            }
+        });
+        footerP.add(newChatBut, BorderLayout.CENTER);
+        
+        revNrep(headerL);
+        revNrep(headerR);
+        revNrep(footerP);
+    }
+
+    public void chatViewP(JPanel headerL, JPanel headerR, JPanel footerP) {
         Font headerFont = new Font("Arial", Font.BOLD, 18);
         String friend = new String("James Finnon");
-        headerLeft.removeAll();
+
+        headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+        headerL.removeAll();
+        headerR.removeAll();
+        footerP.removeAll();
+
         JButton back = new JButton("← Back");
-        headerLeft.add(back);
+        headerL.add(back);
         JLabel chatName = new JLabel(friend);
         chatName.setFont(headerFont);
-        headerLeft.add(chatName);
+        headerL.add(chatName);
+
+        JTextField messageB = new JTextField();
+        footerP.add(messageB, BorderLayout.CENTER);
+
+        JButton sendBut = new JButton("Send =>");
+        footerP.add(sendBut, BorderLayout.EAST);
+
+        JButton searchBut = new JButton("Search ⌕");
+        headerR.add(searchBut);
+
+        JButton conInfBut = new JButton(":");
+        headerR.add(conInfBut);
+
+        revNrep(headerL);
+        revNrep(headerR);
+        revNrep(footerP);
+
+        cardLayout.show(mainP, "chat");
+    }
+    
+
+    public void revNrep(JPanel panel) {
+        panel.revalidate();
+        panel.repaint();
     }
 }
