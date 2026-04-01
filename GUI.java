@@ -78,7 +78,7 @@ public class GUI {
         mainP.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.LineBorder(Color.BLACK, 1), new javax.swing.border.EmptyBorder(15, 15, 15, 15)));
 
         //different mps
-        JPanel landingP = new JPanel(new BorderLayout());
+        landingP = new JPanel(new BorderLayout());
         mainP.add(landingP, "landing");
         
         chatView = new JPanel();
@@ -124,36 +124,31 @@ public class GUI {
      * @param footerP
      */
     public void back (JPanel headerL, JPanel headerR, JPanel footerP) {
-    	if (history.peek().equals("landing")) {
-    		history.pop();
+    	
+    	history.pop();
+    	
+    	if (history.peek().equals("landing")) {   		
     		landingPage(headerL, headerR, footerP);
     	}
-    	else if (history.peek().equals("chat")) {
-    		history.pop();
+    	else if (history.peek().equals("chat")) {    		
     		//chatP(landingP, headerL, headerR, footerP);
     	}
-    	else if (history.peek().equals("profile")) {
-    		history.pop();
+    	else if (history.peek().equals("profile")) {	
     		profileP(headerL, headerR, footerP);
     	}
-    	else if (history.peek().equals("contactsP")) {
-    		history.pop();
+    	else if (history.peek().equals("contactsP")) {   		
     		contactsP(headerL, headerR, footerP);
     	}
-    	else if (history.peek().equals("contactsD")) {
-    		history.pop();
+    	else if (history.peek().equals("contactsD")) {		
     		//contactsD(landingP, headerL, headerR, footerP);
     	}
-    	else if (history.peek().equals("contactsN")) {
-    		history.pop();
+    	else if (history.peek().equals("contactsN")) {  
     		//contactsN(landingP, headerL, headerR, footerP);
     	}
     	else if (history.peek().equals("search")) {
-    		history.pop();
     		//searchP(landingP, headerL, headerR, footerP);
     	}
     	else if (history.peek().equals("chatsN")) {
-    		history.pop();
     		//chatsN(landingP, headerL, headerR, footerP);
     	}
     	
