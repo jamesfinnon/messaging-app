@@ -376,6 +376,27 @@ public class GUI {
         JButton searchBut = new JButton("Search ⌕");
         headerR.add(searchBut);
 
+        JButton newCon = new JButton("+ Add Contacts");
+        newCon.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                chatViewP(headerL, headerR, footerP);
+            }
+        });
+        footerP.add(newCon, BorderLayout.CENTER);
+
+        JPanel sortH = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 0));
+        JButton alphaSort = new JButton("Alphabetical");
+        JButton chronSort = new JButton("Recent");
+
+        sortH.add(alphaSort);
+        sortH.add(chronSort);
+        contactsPage.add(sortH, BorderLayout.NORTH);
+
+        JPanel resCon = new JPanel(new GridLayout(20,1));
+        JScrollPane scroll = new JScrollPane(resCon);
+        contactsPage.add(scroll, BorderLayout.EAST);
+        contactsPage.add(resCon);
+
         revNrep(headerL);
         revNrep(headerR);
         revNrep(footerP);
@@ -383,6 +404,8 @@ public class GUI {
 
         cardLayout.show(mainP, "contactsP");
     }
+
+    
 
     public void revNrep(JPanel panel) {
         panel.revalidate();
