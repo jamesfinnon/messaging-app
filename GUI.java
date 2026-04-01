@@ -102,6 +102,8 @@ public class GUI {
         mainP.add(contactsDet, "contactsD");
 
         contactsNew = new JPanel(new BorderLayout());
+        contactsNew.setLayout(new BoxLayout(contactsNew, BoxLayout.Y_AXIS));
+        contactsNew.setAlignmentX(Component.LEFT_ALIGNMENT);
         mainP.add(contactsNew, "contactsN");
 
         searchPage = new JPanel(new BorderLayout());
@@ -399,10 +401,10 @@ public class GUI {
         JButton searchBut = new JButton("Search ⌕");
         headerR.add(searchBut);
 
-        JButton newCon = new JButton("+ Add Contacts");
+        JButton newCon = new JButton("Add Contacts");
         newCon.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //addConpage
+                contactsN(headerL, headerR, footerP);
             }
         });
         footerP.add(newCon, BorderLayout.CENTER);
@@ -567,6 +569,89 @@ public class GUI {
         revNrep(contactsDet);
 
         cardLayout.show(mainP, "contactsD");        
+    }
+
+    public void contactsN(JPanel headerL, JPanel headerR, JPanel footerP) {
+
+        history.add("contactsN");
+
+        Font titleFont = new Font("Arial", Font.BOLD, 14);
+
+        headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
+        footerP.setLayout(new GridBagLayout());
+
+        contactsDet.removeAll();
+        headerL.removeAll();
+        headerR.removeAll();
+        footerP.removeAll();
+
+        JButton back = new JButton("← Back");
+        back.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	contactsNew.removeAll();
+                back(headerL, headerR, footerP);
+            }
+        });
+        
+        headerL.add(back);
+        JLabel myProfile = new JLabel("Add Contact");
+        myProfile.setFont(headerFont);
+        headerL.add(myProfile);
+
+        JButton save = new JButton("Save");
+        headerR.add(save);
+
+        //profilepic
+        JPanel picWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        picWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
+        JLabel profilePic = new JLabel();
+        profilePic.setPreferredSize(new Dimension(100,100));
+        profilePic.setMaximumSize(profilePic.getPreferredSize());
+        profilePic.setBorder(new javax.swing.border.LineBorder(Color.BLACK, 2));
+        profilePic.setHorizontalAlignment(JLabel.CENTER);
+        profilePic.setVerticalAlignment(JLabel.CENTER);
+        profilePic.setText("[Photo]");
+        profilePic.setForeground(Color.BLACK);
+
+        picWrapper.add(profilePic);
+        contactsNew.add(picWrapper);
+
+        JButton profileH = new JButton("Add Photo");
+        profileH.setFont(headerFont);
+        JPanel profileHWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        profileHWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, profileH.getPreferredSize().height));
+        profileHWrapper.add(profileH);
+        contactsNew.add(profileHWrapper);
+
+        JPanel userPanel = new JPanel(new GridLayout(6, 1));
+        userPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 250));
+        
+        JLabel nameF = new JLabel("Name");
+        nameF.setFont(titleFont);
+        userPanel.add(nameF);
+        JTextField text1 = new JTextField();
+        userPanel.add(text1);
+
+        JLabel pNoF = new JLabel("Phone No");
+        pNoF.setFont(titleFont);
+        userPanel.add(pNoF);
+        JTextField text2 = new JTextField();
+        userPanel.add(text2);
+
+        JLabel usNaF = new JLabel("Username");
+        usNaF.setFont(titleFont);
+        userPanel.add(usNaF);
+        JTextField text3 = new JTextField();
+        userPanel.add(text3);
+
+        contactsNew.add(userPanel);
+
+        revNrep(headerL);
+        revNrep(headerR);
+        revNrep(footerP);
+        revNrep(contactsNew);
+
+        cardLayout.show(mainP, "contactsN");
     }
 
     public void revNrep(JPanel panel) {
