@@ -131,7 +131,7 @@ public class GUI {
     		landingPage(headerL, headerR, footerP);
     	}
     	else if (history.peek().equals("chat")) {    		
-    		//chatP(landingP, headerL, headerR, footerP);
+    		//chatP(headerL, headerR, footerP);
     	}
     	else if (history.peek().equals("profile")) {	
     		profileP(headerL, headerR, footerP);
@@ -140,16 +140,16 @@ public class GUI {
     		contactsP(headerL, headerR, footerP);
     	}
     	else if (history.peek().equals("contactsD")) {		
-    		//contactsD(landingP, headerL, headerR, footerP);
+    		contactsD(headerL, headerR, footerP);
     	}
     	else if (history.peek().equals("contactsN")) {  
-    		//contactsN(landingP, headerL, headerR, footerP);
+    		//contactsN(headerL, headerR, footerP);
     	}
     	else if (history.peek().equals("search")) {
-    		//searchP(landingP, headerL, headerR, footerP);
+    		//searchP(headerL, headerR, footerP);
     	}
     	else if (history.peek().equals("chatsN")) {
-    		//chatsN(landingP, headerL, headerR, footerP);
+    		//chatsN(headerL, headerR, footerP);
     	}
     	
     	
@@ -405,7 +405,7 @@ public class GUI {
         cardLayout.show(mainP, "contactsP");
     }
 
-    
+    public void n
 
     public void revNrep(JPanel panel) {
         panel.revalidate();
