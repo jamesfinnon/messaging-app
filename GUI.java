@@ -12,6 +12,9 @@ public class GUI {
     String profileName = new String("Faisal Yero");
     String userName = new String("faisalyero123");
     String phoneNo = new String("+44 482934 4289384");
+    String message0 = new String("HI");
+    String message1 = new String("hello");
+    String message2 = new String("goodbye");
     
     
     Stack<String> history = new Stack<String>();
@@ -94,6 +97,8 @@ public class GUI {
         mainP.add(contactsPage, "contactsP");
 
         contactsDet = new JPanel(new BorderLayout());
+        contactsDet.setLayout(new BoxLayout(contactsDet, BoxLayout.Y_AXIS));
+        contactsDet.setAlignmentX(Component.LEFT_ALIGNMENT);
         mainP.add(contactsDet, "contactsD");
 
         contactsNew = new JPanel(new BorderLayout());
@@ -131,7 +136,7 @@ public class GUI {
     		landingPage(headerL, headerR, footerP);
     	}
     	else if (history.peek().equals("chat")) {    		
-    		//chatP(headerL, headerR, footerP);
+    		chatP(headerL, headerR, footerP);
     	}
     	else if (history.peek().equals("profile")) {	
     		profileP(headerL, headerR, footerP);
@@ -201,7 +206,7 @@ public class GUI {
         JButton newChatBut = new JButton("+ New Chat");
         newChatBut.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                chatViewP(headerL, headerR, footerP);
+                chatP(headerL, headerR, footerP);
             }
         });
         footerP.add(newChatBut, BorderLayout.CENTER);
@@ -211,7 +216,7 @@ public class GUI {
         revNrep(footerP);
     }
 
-    public void chatViewP(JPanel headerL, JPanel headerR, JPanel footerP) {
+    public void chatP(JPanel headerL, JPanel headerR, JPanel footerP) {
         
         history.add("chat");
 
@@ -248,6 +253,11 @@ public class GUI {
         chatView.add(separ);
 
         JButton conInfBut = new JButton(":");
+        conInfBut.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                contactsD(headerL, headerR, footerP);
+            }
+        });
         headerR.add(conInfBut);
 
         revNrep(headerL);
@@ -380,7 +390,7 @@ public class GUI {
         JButton newCon = new JButton("+ Add Contacts");
         newCon.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                chatViewP(headerL, headerR, footerP);
+                //addConpage
             }
         });
         footerP.add(newCon, BorderLayout.CENTER);
@@ -406,7 +416,118 @@ public class GUI {
         cardLayout.show(mainP, "contactsP");
     }
 
-    public void n
+    public void contactsD(JPanel headerL, JPanel headerR, JPanel footerP) {
+
+        history.add("contactD");
+
+        Font titleFont = new Font("Arial", Font.BOLD, 14);
+
+        headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+        contactsDet.removeAll();
+        headerL.removeAll();
+        headerR.removeAll();
+        footerP.removeAll();
+
+        JButton back = new JButton("← Back");
+        back.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	contactsDet.removeAll();
+                back(headerL, headerR, footerP);
+            }
+        });
+        
+        headerL.add(back);
+        JLabel myProfile = new JLabel("Contact Details");
+        myProfile.setFont(headerFont);
+        headerL.add(myProfile);
+
+        //profilepic
+        JPanel picWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        picWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
+        JLabel profilePic = new JLabel();
+        profilePic.setPreferredSize(new Dimension(100,100));
+        profilePic.setMaximumSize(profilePic.getPreferredSize());
+        profilePic.setBorder(new javax.swing.border.LineBorder(Color.BLACK, 2));
+        profilePic.setHorizontalAlignment(JLabel.CENTER);
+        profilePic.setVerticalAlignment(JLabel.CENTER);
+        profilePic.setText("[Photo]");
+        profilePic.setForeground(Color.BLACK);
+
+        picWrapper.add(profilePic);
+        contactsDet.add(picWrapper);
+
+        JLabel profileH = new JLabel(profileName);
+        profileH.setFont(headerFont);
+        JPanel profileHWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        profileHWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, profileH.getPreferredSize().height));
+        profileHWrapper.add(profileH);
+        contactsDet.add(profileHWrapper);
+
+        JLabel profNo = new JLabel(phoneNo);
+        profNo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        contactsDet.add(profNo);
+
+        JSeparator separ = new JSeparator(JSeparator.HORIZONTAL);
+        separ.setMaximumSize(new Dimension(Integer.MAX_VALUE, 4));
+        contactsDet.add(separ);
+
+        JPanel RCMP = new JPanel(new GridLayout(1, 1));
+        RCMP.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        
+        JLabel RCM = new JLabel("Recent Messages");
+        RCM.setFont(titleFont);
+        RCMP.add(RCM);
+
+        contactsDet.add(RCMP);
+
+        JSeparator separ0 = new JSeparator(JSeparator.HORIZONTAL);
+        separ0.setMaximumSize(new Dimension(Integer.MAX_VALUE, 4));
+        contactsDet.add(separ0);
+        
+        JPanel userPanel = new JPanel(new GridLayout(1, 1));
+        userPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        
+        JLabel mess0 = new JLabel(message0);
+        userPanel.add(mess0);
+
+        contactsDet.add(userPanel);
+
+        JSeparator separ1 = new JSeparator(JSeparator.HORIZONTAL);
+        separ1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
+        contactsDet.add(separ1);
+        
+        JPanel phonePanel = new JPanel(new GridLayout(1, 1));
+        phonePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        
+        JLabel mess1 = new JLabel(message1);
+        phonePanel.add(mess1);
+
+        contactsDet.add(phonePanel);
+        
+        JSeparator separ2 = new JSeparator(JSeparator.HORIZONTAL);
+        separ2.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
+        contactsDet.add(separ2);
+
+        JPanel mess2P = new JPanel(new GridLayout(1, 1));
+        mess2P.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        
+        JLabel mess2 = new JLabel(message2);
+        mess2P.add(mess2);
+
+        contactsDet.add(mess2P);
+        
+        JSeparator separ3 = new JSeparator(JSeparator.HORIZONTAL);
+        separ3.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
+        contactsDet.add(separ3);
+
+        revNrep(headerL);
+        revNrep(headerR);
+        revNrep(footerP);
+        revNrep(contactsDet);
+
+        cardLayout.show(mainP, "contactsD");        
+    }
 
     public void revNrep(JPanel panel) {
         panel.revalidate();
