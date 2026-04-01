@@ -225,6 +225,7 @@ public class GUI {
         headerL.add(back);
         back.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                chatView.removeAll();
                 back(headerL, headerR, footerP);
             }
         });
