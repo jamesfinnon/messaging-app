@@ -114,22 +114,22 @@ public class GUI {
         
     }
     
-    //public void back (JPanel landingP, JPanel headerL, JPanel headerR, JPanel footerP) {
-    	//if (history.getFirst().equals("landing")) {
-    		//history.pop();
-    	//	landingPage(landingP, headerL, headerR, footerP);
-    	//}
-    	//else if (history.getFirst().equals("chat")) {
-    	//	history.pop();
-    //		chatPage(landingP, headerL, headerR, footerP);
-    //	}
-    //	else if (history.getFirst().equals("chat")) {
-    //		history.pop();
-    //		chatPage(landingP, headerL, headerR, footerP);
-    //	}
+    public void back (JPanel landingP, JPanel headerL, JPanel headerR, JPanel footerP) {
+    	if (history.getFirst().equals("landing")) {
+    		history.pop();
+    		landingPage(landingP, headerL, headerR, footerP);
+    	}
+    	else if (history.getFirst().equals("chat")) {
+    		history.pop();
+    		chatPage(headerL, headerR, footerP);
+    	}
+    	else if (history.getFirst().equals("profile")) {
+    		history.pop();
+    		profileP(headerL, headerR, footerP);
+    	}
     	
     	
-   // }
+    }
     
     
     public void landingPage(JPanel landingP, JPanel headerL, JPanel headerR, JPanel footerP) {
@@ -221,6 +221,9 @@ public class GUI {
     }
     
     public void profileP(JPanel headerL, JPanel headerR, JPanel footerP) {
+    	
+    	history.add("profile");
+    	
     	Font titleFont = new Font("Arial", Font.BOLD, 14);
 
         headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
