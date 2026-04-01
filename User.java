@@ -11,9 +11,24 @@ public class User extends Contact {
     
 	public void addContact(Contact contact) {
 		contacts.add(contact);
+		
+	}
+	
+	public void sortContactsAlphabetically() {
 		Collections.sort(contacts, Comparator.comparing(Contact::getName));
 	}
+	
+	public void sortContactsRecent() {
+		Collections.sort(contacts, Comparator.comparing(Contact::getDateAdded));
+	}
+	
+	
     
+	/**
+	 * @param searchWord
+	 * @param searchBy
+	 * @return
+	 */
 	public ArrayList<Contact> searchContacts(String searchWord, int searchBy) {
 		
 		Contact contact = new Contact();
@@ -39,7 +54,7 @@ public class User extends Contact {
 		}
 		return matches;
 	}
-	
+
     // getters and setters
 	public ArrayList<Contact> getContacts() {
 		return contacts;
