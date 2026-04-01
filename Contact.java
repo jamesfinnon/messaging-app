@@ -1,7 +1,6 @@
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -18,8 +17,6 @@ import javax.imageio.ImageIO;
  * @author Sameer Kaushal
  */
 public class Contact {
-
-	// ============ FIELDS ============
 
 	private String name;
 	private String username;
@@ -55,8 +52,7 @@ public class Contact {
 	 * @param name the contact's name
 	 * @param username the contact's username
 	 * @param number the contact's phone number
-	 * @param id the unique identifier for the contact
-	 * @param profilePicture the URL to the contact's profile picture
+	 * @param profilePicture the path to the contact's profile picture
 	 */
 	public Contact(String name, String username, String number, String profilePicturePath) {
 		setName(name);
@@ -75,7 +71,7 @@ public class Contact {
 	 * @param name the contact's name
 	 * @param username the contact's username
 	 * @param number the contact's phone number
-	 * @param profilePicture the URL to the contact's profile picture
+	 * @param profilePicture the path to the contact's profile picture
 	 * @param dateAdded the instant when this contact was added
 	 */
 	public Contact(String name, String username, String number, String profilePicturePath, Instant dateAdded) {
@@ -104,7 +100,7 @@ public class Contact {
      * @author sameerkashaul
      * 
      * @param number
-     * @return
+     * @return validated number
      */
     private static String validateNumber(String number) {
         String trimmedNumber = validateAndTrim(number, "Phone number");
@@ -121,7 +117,7 @@ public class Contact {
      * 
      * @param value
      * @param fieldName
-     * @return
+     * @return trimmed string
      */
     private static String validateAndTrim(String value, String fieldName) {
         if (value == null || value.trim().isEmpty())
