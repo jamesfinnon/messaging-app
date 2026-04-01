@@ -1,7 +1,13 @@
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
+
+import javax.imageio.ImageIO;
 
 /**
  * Represents a contact in the messaging application.
@@ -16,13 +22,26 @@ public class Contact {
 	// ============ FIELDS ============
 
 	private String name;
+	private String username;
 	private String number;
 	private UUID id;
-	private URL profilePicture;
+	private BufferedImage profilePicture;
 	private Instant dateAdded;
-
+	
+	private ArrayList<Chat> chats;
+	
 	// ============ CONSTRUCTORS ============
-
+	
+	public Contact() {
+		name = "";
+		setUsername("");
+		number = "";
+		id = UUID.randomUUID();
+		setImage("/defaultUser.jpg");
+		this.dateAdded = Instant.now();
+		
+	}
+	
 	/**
 	 * Creates a new Contact with the specified details.
 	 * Sets dateAdded to the current time.
@@ -34,11 +53,12 @@ public class Contact {
 	 * @throws NullPointerException if name, number, or id is null
 	 * @throws IllegalArgumentException if name or number fails validation
 	 */
-	public Contact(String name, String number, UUID id, URL profilePicture) {
+	public Contact(String name, String username, String number, UUID id, String profilePicturePath) {
 		this.name = validateName(name);
+		this.setUsername(validateName(username));
 		this.number = validatePhoneNumber(number);
 		this.id = Objects.requireNonNull(id, "ID cannot be null");
-		this.profilePicture = profilePicture;
+		
 		this.dateAdded = Instant.now();
 	}
 
@@ -54,25 +74,12 @@ public class Contact {
 	 * @throws NullPointerException if name, number, id, or dateAdded is null
 	 * @throws IllegalArgumentException if name or number fails validation
 	 */
-	public Contact(String name, String number, UUID id, URL profilePicture, Instant dateAdded) {
+	public Contact(String name, String number, UUID id, String profilePicturePath, Instant dateAdded) {
 		this.name = validateName(name);
 		this.number = validatePhoneNumber(number);
 		this.id = Objects.requireNonNull(id, "ID cannot be null");
-		this.profilePicture = profilePicture;
+		setImage(profilePicturePath);
 		this.dateAdded = Objects.requireNonNull(dateAdded, "Date added cannot be null");
-	}
-
-	/**
-	 * Private constructor used by the Builder pattern.
-	 *
-	 * @param builder the Builder instance with contact data
-	 */
-	private Contact(Builder builder) {
-		this.name = validateName(builder.name);
-		this.number = validatePhoneNumber(builder.number);
-		this.id = Objects.requireNonNull(builder.id, "ID cannot be null");
-		this.profilePicture = builder.profilePicture;
-		this.dateAdded = builder.dateAdded != null ? builder.dateAdded : Instant.now();
 	}
 
 	// ============ GETTERS ============
@@ -109,7 +116,7 @@ public class Contact {
 	 *
 	 * @return the contact's profile picture URL
 	 */
-	public URL getProfilePicture() {
+	public BufferedImage getProfilePicture() {
 		return profilePicture;
 	}
 
@@ -122,7 +129,15 @@ public class Contact {
 	public Instant getDateAdded() {
 		return dateAdded;
 	}
+	
+	public ArrayList<Chat> getChats() {
+		return chats;
+	}
 
+	public String getUsername() {
+		return username;
+	}
+	
 	// ============ SETTERS ============
 
 	/**
@@ -152,7 +167,7 @@ public class Contact {
 	 *
 	 * @param profilePicture the URL to the contact's profile picture
 	 */
-	public void setProfilePicture(URL profilePicture) {
+	public void setProfilePicture(BufferedImage profilePicture) {
 		this.profilePicture = profilePicture;
 	}
 
@@ -165,6 +180,14 @@ public class Contact {
 	 */
 	public void setDateAdded(Instant dateAdded) {
 		this.dateAdded = Objects.requireNonNull(dateAdded, "Date added cannot be null");
+	}
+	
+	public void setChats(ArrayList<Chat> chats) {
+		this.chats = chats;
+	}
+	
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	// ============ FORMATTED OUTPUT ============
@@ -208,6 +231,7 @@ public class Contact {
 	public String getFormattedCard() {
 		return name + "\n" + number;
 	}
+
 
 	// ============ VALIDATION METHODS ============
 
@@ -356,102 +380,15 @@ public class Contact {
 				", dateAdded=" + dateAdded +
 				'}';
 	}
-
-	// ============ BUILDER PATTERN ============
-
-	/**
-	 * Builder class for creating Contact instances with flexible parameters.
-	 * Makes construction more flexible, especially useful for loading from disk.
-	 *
-	 * Usage Example:
-	 * <pre>
-	 * Contact contact = new Contact.Builder("John Doe")
-	 *     .withNumber("+44123456789")
-	 *     .withId(UUID.randomUUID())
-	 *     .withProfilePicture(profileUrl)
-	 *     .withDateAdded(Instant.now())
-	 *     .build();
-	 * </pre>
-	 */
-	public static class Builder {
-		private String name;
-		private String number;
-		private UUID id;
-		private URL profilePicture;
-		private Instant dateAdded;
-
-		/**
-		 * Creates a new Builder with required name parameter.
-		 *
-		 * @param name the contact's name (required)
-		 */
-		public Builder(String name) {
-			this.name = name;
-		}
-
-		/**
-		 * Sets the phone number.
-		 *
-		 * @param number the contact's phone number
-		 * @return this Builder instance for method chaining
-		 */
-		public Builder withNumber(String number) {
-			this.number = number;
-			return this;
-		}
-
-		/**
-		 * Sets the contact ID.
-		 *
-		 * @param id the unique identifier
-		 * @return this Builder instance for method chaining
-		 */
-		public Builder withId(UUID id) {
-			this.id = id;
-			return this;
-		}
-
-		/**
-		 * Sets the profile picture URL.
-		 *
-		 * @param profilePicture the URL to the profile picture
-		 * @return this Builder instance for method chaining
-		 */
-		public Builder withProfilePicture(URL profilePicture) {
-			this.profilePicture = profilePicture;
-			return this;
-		}
-
-		/**
-		 * Sets the date when the contact was added.
-		 *
-		 * @param dateAdded the instant when added
-		 * @return this Builder instance for method chaining
-		 */
-		public Builder withDateAdded(Instant dateAdded) {
-			this.dateAdded = dateAdded;
-			return this;
-		}
-
-		/**
-		 * Builds and returns the Contact instance.
-		 * Name and ID are required; other fields are optional.
-		 *
-		 * @return a new Contact instance
-		 * @throws NullPointerException if name or id is not set
-		 * @throws IllegalArgumentException if name or number fails validation
-		 */
-		public Contact build() {
-			if (name == null) {
-				throw new NullPointerException("Name is required for building a Contact");
-			}
-			if (id == null) {
-				throw new NullPointerException("ID is required for building a Contact");
-			}
-			if (number == null) {
-				throw new NullPointerException("Number is required for building a Contact");
-			}
-			return new Contact(this);
+	
+	public void setImage(String imagePath) {
+		try 
+		{
+			setProfilePicture(ImageIO.read(new File(imagePath)));
+		} 
+		catch (IOException e) 
+		{
+		    e.printStackTrace();
 		}
 	}
 }
