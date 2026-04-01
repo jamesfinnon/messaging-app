@@ -34,6 +34,8 @@ public class Contact {
 		setUsername("");
 		number = "";
 		id = UUID.randomUUID();
+		setImage("/defaultUser.jpg");
+		this.dateAdded = Instant.now();
 		
 	}
 	
