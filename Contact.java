@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -26,7 +27,9 @@ public class Contact {
 	private UUID id;
 	private BufferedImage profilePicture;
 	private Instant dateAdded;
-
+	
+	private ArrayList<Chat> chats;
+	
 	// ============ CONSTRUCTORS ============
 	
 	public Contact() {
@@ -127,8 +130,12 @@ public class Contact {
 		return dateAdded;
 	}
 	
-	public void setUsername(String username) {
-		this.username = username;
+	public ArrayList<Chat> getChats() {
+		return chats;
+	}
+
+	public String getUsername() {
+		return username;
 	}
 	
 	// ============ SETTERS ============
@@ -174,6 +181,14 @@ public class Contact {
 	public void setDateAdded(Instant dateAdded) {
 		this.dateAdded = Objects.requireNonNull(dateAdded, "Date added cannot be null");
 	}
+	
+	public void setChats(ArrayList<Chat> chats) {
+		this.chats = chats;
+	}
+	
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
 	// ============ FORMATTED OUTPUT ============
 
@@ -215,10 +230,6 @@ public class Contact {
 	 */
 	public String getFormattedCard() {
 		return name + "\n" + number;
-	}
-	
-	public String getUsername() {
-		return username;
 	}
 
 
