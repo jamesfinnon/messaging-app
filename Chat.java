@@ -3,7 +3,7 @@ import java.util.LinkedList;
 
 public class Chat {
     private LinkedList<Message> messages;
-    private ArrayList<Contact> chatMembers;
+    private Set<Contact> chatMembers;
 
 	public LinkedList<Message> getMessages() {
 		return messages;
