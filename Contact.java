@@ -77,19 +77,6 @@ public class Contact {
 		this.dateAdded = Objects.requireNonNull(dateAdded, "Date added cannot be null");
 	}
 
-	/**
-	 * Private constructor used by the Builder pattern.
-	 *
-	 * @param builder the Builder instance with contact data
-	 */
-	private Contact(Builder builder) {
-		this.name = validateName(builder.name);
-		this.number = validatePhoneNumber(builder.number);
-		this.id = Objects.requireNonNull(builder.id, "ID cannot be null");
-		this.profilePicture = builder.profilePicture;
-		this.dateAdded = builder.dateAdded != null ? builder.dateAdded : Instant.now();
-	}
-
 	// ============ GETTERS ============
 
 	/**
