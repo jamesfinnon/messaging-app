@@ -134,27 +134,35 @@ public class GUI {
     	
     	if (history.peek().equals("landing")) {   		
     		landingPage(headerL, headerR, footerP);
+            history.pop();
     	}
     	else if (history.peek().equals("chat")) {    		
     		chatP(headerL, headerR, footerP);
+            history.pop();
     	}
     	else if (history.peek().equals("profile")) {	
     		profileP(headerL, headerR, footerP);
+            history.pop();
     	}
     	else if (history.peek().equals("contactsP")) {   		
     		contactsP(headerL, headerR, footerP);
+            history.pop();
     	}
     	else if (history.peek().equals("contactsD")) {		
     		contactsD(headerL, headerR, footerP);
+            history.pop();
     	}
     	else if (history.peek().equals("contactsN")) {  
     		//contactsN(headerL, headerR, footerP);
+            history.pop();
     	}
     	else if (history.peek().equals("search")) {
     		//searchP(headerL, headerR, footerP);
+            history.pop();
     	}
     	else if (history.peek().equals("chatsN")) {
     		//chatsN(headerL, headerR, footerP);
+            history.pop();
     	}
     	
     	
