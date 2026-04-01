@@ -123,35 +123,35 @@ public class GUI {
      * @param footerP
      */
     public void back (JPanel landingP, JPanel headerL, JPanel headerR, JPanel footerP) {
-    	if (history.getFirst().equals("landing")) {
+    	if (history.peek().equals("landing")) {
     		history.pop();
     		landingPage(landingP, headerL, headerR, footerP);
     	}
-    	else if (history.getFirst().equals("chat")) {
+    	else if (history.peek().equals("chat")) {
     		history.pop();
     		//chatP(landingP, headerL, headerR, footerP);
     	}
-    	else if (history.getFirst().equals("profile")) {
+    	else if (history.peek().equals("profile")) {
     		history.pop();
     		profileP(landingP, headerL, headerR, footerP);
     	}
-    	else if (history.getFirst().equals("contactsP")) {
+    	else if (history.peek().equals("contactsP")) {
     		history.pop();
     		//contactsP(landingP, headerL, headerR, footerP);
     	}
-    	else if (history.getFirst().equals("contactsD")) {
+    	else if (history.peek().equals("contactsD")) {
     		history.pop();
     		//contactsD(landingP, headerL, headerR, footerP);
     	}
-    	else if (history.getFirst().equals("contactsN")) {
+    	else if (history.peek().equals("contactsN")) {
     		history.pop();
     		//contactsN(landingP, headerL, headerR, footerP);
     	}
-    	else if (history.getFirst().equals("search")) {
+    	else if (history.peek().equals("search")) {
     		history.pop();
     		//searchP(landingP, headerL, headerR, footerP);
     	}
-    	else if (history.getFirst().equals("chatsN")) {
+    	else if (history.peek().equals("chatsN")) {
     		history.pop();
     		//chatsN(landingP, headerL, headerR, footerP);
     	}
