@@ -30,11 +30,14 @@ public class Contact {
 	
 	private ArrayList<Chat> chats;
 	
-	// ============ CONSTRUCTORS ============
-	
+	/**
+	 * default constructor
+	 * 
+	 * @author jamesfinnon
+	 */
 	public Contact() {
 		name = "";
-		setUsername("");
+		username = "";
 		number = "";
 		id = UUID.randomUUID();
 		setImage("/defaultUser.jpg");
@@ -43,15 +46,17 @@ public class Contact {
 	}
 	
 	/**
-	 * Creates a new Contact with the specified details.
-	 * Sets dateAdded to the current time.
+	 * creates a new Contact with the specified details
+	 * sets dateAdded to the current time
+	 * 
+	 * @author sameerkashaul
+	 * @author jamesfinnon
 	 *
 	 * @param name the contact's name
+	 * @param username the contact's username
 	 * @param number the contact's phone number
 	 * @param id the unique identifier for the contact
 	 * @param profilePicture the URL to the contact's profile picture
-	 * @throws NullPointerException if name, number, or id is null
-	 * @throws IllegalArgumentException if name or number fails validation
 	 */
 	public Contact(String name, String username, String number, String profilePicturePath) {
 		setName(name);
@@ -62,16 +67,16 @@ public class Contact {
 	}
 
 	/**
-	 * Creates a new Contact with the specified details and a custom date added.
-	 * Useful for loading contacts from disk.
+	 * used for loading from disk
+	 * 
+	 * @author sameerkaushal
+	 * @author jamesfinnon
 	 *
 	 * @param name the contact's name
+	 * @param username the contact's username
 	 * @param number the contact's phone number
-	 * @param id the unique identifier for the contact
 	 * @param profilePicture the URL to the contact's profile picture
 	 * @param dateAdded the instant when this contact was added
-	 * @throws NullPointerException if name, number, id, or dateAdded is null
-	 * @throws IllegalArgumentException if name or number fails validation
 	 */
 	public Contact(String name, String username, String number, String profilePicturePath, Instant dateAdded) {
 		setName(name);
@@ -81,178 +86,52 @@ public class Contact {
 		setImage("/defaultUser.jpg");
 		this.dateAdded = Objects.requireNonNull(dateAdded, "Date added cannot be null");
 	}
-
-	// ============ GETTERS ============
-
-	/**
-	 * Gets the contact's name.
-	 *
-	 * @return the contact's name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Gets the contact's phone number.
-	 *
-	 * @return the contact's phone number
-	 */
-	public String getNumber() {
-		return number;
-	}
-
-	/**
-	 * Gets the contact's unique identifier.
-	 *
-	 * @return the contact's ID
-	 */
-	public UUID getId() {
-		return id;
-	}
-
-	/**
-	 * Gets the contact's profile picture URL.
-	 *
-	 * @return the contact's profile picture URL
-	 */
-	public BufferedImage getProfilePicture() {
-		return profilePicture;
-	}
-
-	/**
-	 * Gets the date and time when this contact was added.
-	 * Used for sorting contacts by most recently added.
-	 *
-	 * @return the instant when the contact was added
-	 */
-	public Instant getDateAdded() {
-		return dateAdded;
-	}
 	
-	public ArrayList<Chat> getChats() {
-		return chats;
-	}
+    /**
+     * @author sameerkashaul
+     * 
+     * @param name
+     * @return
+     */
+    private static String validateName(String name) {
+        String trimmedName = validateAndTrim(name, "Name");
+        if (trimmedName.length() > 100)
+            throw new IllegalArgumentException("Name cannot exceed 100 characters");
+        return trimmedName;
+    }
 
-	public String getUsername() {
-		return username;
-	}
-	
-	// ============ SETTERS ============
+    /**
+     * @author sameerkashaul
+     * 
+     * @param number
+     * @return
+     */
+    private static String validateNumber(String number) {
+        String trimmedNumber = validateAndTrim(number, "Phone number");
+        if (!trimmedNumber.matches("[0-9+\\-()\\s]+"))
+            throw new IllegalArgumentException("Phone number contains invalid characters");
+        long digitCount = trimmedNumber.chars().filter(Character::isDigit).count();
+        if (digitCount < 7 || digitCount > 15)
+            throw new IllegalArgumentException("Phone number must contain 7-15 digits");
+        return trimmedNumber;
+    }
 
-	/**
-	 * Sets the contact's name.
-	 *
-	 * @param name the contact's name
-	 * @throws NullPointerException if name is null
-	 * @throws IllegalArgumentException if name fails validation
-	 */
-	public void setName(String name) {
-		this.name = validateName(name);
-	}
-
-	/**
-	 * Sets the contact's phone number.
-	 *
-	 * @param number the contact's phone number
-	 * @throws NullPointerException if number is null
-	 * @throws IllegalArgumentException if number fails validation
-	 */
-	public void setNumber(String number) {
-		this.number = validatePhoneNumber(number);
-	}
-
-	/**
-	 * Sets the contact's profile picture URL.
-	 *
-	 * @param profilePicture the URL to the contact's profile picture
-	 */
-	public void setProfilePicture(BufferedImage profilePicture) {
-		this.profilePicture = profilePicture;
-	}
-
-	/**
-	 * Sets the date and time when this contact was added.
-	 * Primarily used when loading contacts from disk.
-	 *
-	 * @param dateAdded the instant when the contact was added
-	 * @throws NullPointerException if dateAdded is null
-	 */
-	public void setDateAdded(Instant dateAdded) {
-		this.dateAdded = Objects.requireNonNull(dateAdded, "Date added cannot be null");
-	}
-	
-	public void setChats(ArrayList<Chat> chats) {
-		this.chats = chats;
-	}
-	
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	// ============ FORMATTED OUTPUT ============
-
-	/**
-	 * Returns a formatted string representation of the contact for UI display.
-	 * Format: "Name (PhoneNumber)"
-	 * Example: "John Doe (+44 1234 567890)"
-	 *
-	 * @return formatted contact string suitable for display
-	 */
-	public String getFormattedDisplay() {
-		return name + " (" + number + ")";
-	}
-
-	/**
-	 * Returns a short formatted string with just the name for list displays.
-	 *
-	 * @return the contact's name
-	 */
-	public String getFormattedName() {
-		return name;
-	}
-
-	/**
-	 * Returns a detailed formatted string with all contact information.
-	 * Format: "Name | PhoneNumber | Added: DateAdded"
-	 *
-	 * @return detailed formatted contact string
-	 */
-	public String getFormattedDetail() {
-		return name + " | " + number + " | Added: " + dateAdded;
-	}
-
-	/**
-	 * Returns a formatted string with name and phone number on separate lines.
-	 * Useful for card-style displays.
-	 *
-	 * @return multi-line formatted contact string
-	 */
-	public String getFormattedCard() {
-		return name + "\n" + number;
-	}
-
-	// ============ SEARCH & QUERY SUPPORT ============
-
-	/**
-	 * Checks if this contact matches the given keyword.
-	 * Performs case-insensitive search across name and phone number.
-	 *
-	 * @param keyword the search keyword
-	 * @return true if the contact's name or number contains the keyword, false otherwise
-	 */
-	public boolean matches(String keyword) {
-		if (keyword == null || keyword.trim().isEmpty()) {
-			return false;
-		}
-		String lowerKeyword = keyword.toLowerCase();
-		return name.toLowerCase().contains(lowerKeyword) || number.toLowerCase().contains(lowerKeyword);
-	}
-	
-	
-	
+    /**
+     * @author sameerkashaul
+     * 
+     * @param value
+     * @param fieldName
+     * @return
+     */
+    private static String validateAndTrim(String value, String fieldName) {
+        if (value == null || value.trim().isEmpty())
+            throw new IllegalArgumentException(fieldName + " cannot be blank");
+        return value.trim();
+    }
 	
 	/**
+	 * @author jamesfinnon
+	 * 
 	 * @param imagePath
 	 */
 	public void setImage(String imagePath) {
@@ -265,4 +144,58 @@ public class Contact {
 		    e.printStackTrace();
 		}
 	}
+	
+	// getters and setters
+	public String getName() {
+		return name;
+	}
+	
+	public String getNumber() {
+		return number;
+	}
+
+	public UUID getId() {
+		return id;
+	}
+
+	public BufferedImage getProfilePicture() {
+		return profilePicture;
+	}
+
+	public Instant getDateAdded() {
+		return dateAdded;
+	}
+	
+	public ArrayList<Chat> getChats() {
+		return chats;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+	
+	public void setName(String name) {
+		this.name = validateName(name);
+	}
+
+	public void setNumber(String number) {
+		this.number = validateNumber(number);
+	}
+	
+	public void setProfilePicture(BufferedImage profilePicture) {
+		this.profilePicture = profilePicture;
+	}
+
+	public void setDateAdded(Instant dateAdded) {
+		this.dateAdded = dateAdded;
+	}
+	
+	public void setChats(ArrayList<Chat> chats) {
+		this.chats = chats;
+	}
+	
+	public void setUsername(String username) {
+		this.username = username;
+	}
 }
+
