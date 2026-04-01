@@ -6,6 +6,10 @@ public class User extends Contact {
     public User() {
     	ArrayList<Contact> contacts = new ArrayList<Contact>();    	   	
     }
+
+	public void addContact(Contact contact) {
+		contacts.add(contact);
+	}
     
     // getters and setters
 	public ArrayList<Contact> getContacts() {
