@@ -174,6 +174,7 @@ public class GUI {
     	history.add("landing");
     	
         headerL.setLayout(new BoxLayout(headerL, BoxLayout.Y_AXIS));
+        footerP.setLayout(new BorderLayout());
 
         headerL.removeAll();
         headerR.removeAll();
@@ -229,6 +230,7 @@ public class GUI {
         history.add("chat");
 
         headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
+        footerP.setLayout(new BorderLayout());
 
         headerL.removeAll();
         headerR.removeAll();
@@ -282,6 +284,7 @@ public class GUI {
     	Font titleFont = new Font("Arial", Font.BOLD, 14);
 
         headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
+        footerP.setLayout(new BorderLayout());
 
         profilePage.removeAll();
         headerL.removeAll();
@@ -374,6 +377,7 @@ public class GUI {
         history.add("contactsP");
 
         headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
+        footerP.setLayout(new BorderLayout());
 
         contactsPage.removeAll();
         headerL.removeAll();
@@ -431,6 +435,8 @@ public class GUI {
         Font titleFont = new Font("Arial", Font.BOLD, 14);
 
         headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
+        footerP.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
 
         contactsDet.removeAll();
         headerL.removeAll();
@@ -528,6 +534,32 @@ public class GUI {
         JSeparator separ3 = new JSeparator(JSeparator.HORIZONTAL);
         separ3.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
         contactsDet.add(separ3);
+
+        JButton topButton = new JButton("Send Message");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.5; 
+        gbc.insets = new Insets(2, 2, 2, 2);
+        footerP.add(topButton, gbc);
+
+        JButton bottomLeft = new JButton("Edit");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0.5;
+        gbc.weighty = 0.5;
+        footerP.add(bottomLeft, gbc);
+
+        JButton bottomRight = new JButton("Delete");
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0.5;
+        gbc.weighty = 0.5;
+        footerP.add(bottomRight, gbc);
 
         revNrep(headerL);
         revNrep(headerR);
