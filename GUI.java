@@ -114,6 +114,14 @@ public class GUI {
         
     }
     
+    /**
+     * @author jamesfinnon
+     * 
+     * @param landingP
+     * @param headerL
+     * @param headerR
+     * @param footerP
+     */
     public void back (JPanel landingP, JPanel headerL, JPanel headerR, JPanel footerP) {
     	if (history.getFirst().equals("landing")) {
     		history.pop();
@@ -121,7 +129,7 @@ public class GUI {
     	}
     	else if (history.getFirst().equals("chat")) {
     		history.pop();
-    		chatP(landingP, headerL, headerR, footerP);
+    		//chatP(landingP, headerL, headerR, footerP);
     	}
     	else if (history.getFirst().equals("profile")) {
     		history.pop();
@@ -129,23 +137,23 @@ public class GUI {
     	}
     	else if (history.getFirst().equals("contactsP")) {
     		history.pop();
-    		contactsP(landingP, headerL, headerR, footerP);
+    		//contactsP(landingP, headerL, headerR, footerP);
     	}
     	else if (history.getFirst().equals("contactsD")) {
     		history.pop();
-    		contactsD(landingP, headerL, headerR, footerP);
+    		//contactsD(landingP, headerL, headerR, footerP);
     	}
     	else if (history.getFirst().equals("contactsN")) {
     		history.pop();
-    		contactsN(landingP, headerL, headerR, footerP);
+    		//contactsN(landingP, headerL, headerR, footerP);
     	}
     	else if (history.getFirst().equals("search")) {
     		history.pop();
-    		searchP(landingP, headerL, headerR, footerP);
+    		//searchP(landingP, headerL, headerR, footerP);
     	}
     	else if (history.getFirst().equals("chatsN")) {
     		history.pop();
-    		chatsN(landingP, headerL, headerR, footerP);
+    		//chatsN(landingP, headerL, headerR, footerP);
     	}
     	
     	
@@ -156,7 +164,7 @@ public class GUI {
     	
     	history.add("landing");
     	
-        //headerL.setLayout(new BoxLayout(headerL, BoxLayout.Y_AXIS));
+        headerL.setLayout(new BoxLayout(headerL, BoxLayout.Y_AXIS));
 
         headerL.removeAll();
         headerR.removeAll();
@@ -186,7 +194,7 @@ public class GUI {
         
         //mp
         landingP.removeAll();
-        //landingP.setLayout(new BorderLayout());
+        landingP.setLayout(new BorderLayout());
 
         //fp
         JButton newChatBut = new JButton("+ New Chat");
@@ -195,7 +203,7 @@ public class GUI {
                 chatViewP(landingP, headerL, headerR, footerP);
             }
         });
-        //footerP.add(newChatBut, BorderLayout.CENTER);
+        footerP.add(newChatBut, BorderLayout.CENTER);
         
         revNrep(headerL);
         revNrep(headerR);
@@ -259,6 +267,12 @@ public class GUI {
         footerP.removeAll();
 
         JButton back = new JButton("← Back");
+        back.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	profilePage.removeAll();
+                back(landingP, headerL, headerR, footerP);
+            }
+        });
         headerL.add(back);
         JLabel myProfile = new JLabel("My Profile");
         myProfile.setFont(headerFont);
@@ -287,10 +301,6 @@ public class GUI {
         JSeparator separ = new JSeparator(JSeparator.HORIZONTAL);
         separ.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
         profilePage.add(separ);
-
-        //JPanel iP1 = new JPanel();
-        //iP1.setLayout(new BoxLayout(iP1, BoxLayout.Y_AXIS));
-        //iP1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
         
         
         JPanel userPanel = new JPanel(new GridLayout(2, 1));
@@ -302,8 +312,6 @@ public class GUI {
         userPanel.add(new JLabel(userName));
 
         profilePage.add(userPanel);
-
-        //profilePage.add(iP1);
 
         JSeparator separ1 = new JSeparator(JSeparator.HORIZONTAL);
         separ1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
