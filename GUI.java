@@ -19,6 +19,7 @@ public class GUI {
     private JFrame window;
     private CardLayout cardLayout;
     private JPanel mainP;
+    private JPanel landingP;
     private JPanel chatView;
     private JPanel profilePage;
     private JPanel contactsPage;
@@ -108,7 +109,7 @@ public class GUI {
         window.add(mainP, BorderLayout.CENTER);
         window.add(footerP, BorderLayout.SOUTH);
 
-        landingPage(landingP, headerL, headerR, footerP);
+        landingPage(headerL, headerR, footerP);
 
         window.setVisible(true);
         
@@ -122,10 +123,10 @@ public class GUI {
      * @param headerR
      * @param footerP
      */
-    public void back (JPanel landingP, JPanel headerL, JPanel headerR, JPanel footerP) {
+    public void back (JPanel headerL, JPanel headerR, JPanel footerP) {
     	if (history.peek().equals("landing")) {
     		history.pop();
-    		landingPage(landingP, headerL, headerR, footerP);
+    		landingPage(headerL, headerR, footerP);
     	}
     	else if (history.peek().equals("chat")) {
     		history.pop();
@@ -133,11 +134,11 @@ public class GUI {
     	}
     	else if (history.peek().equals("profile")) {
     		history.pop();
-    		profileP(landingP, headerL, headerR, footerP);
+    		profileP(headerL, headerR, footerP);
     	}
     	else if (history.peek().equals("contactsP")) {
     		history.pop();
-    		//contactsP(landingP, headerL, headerR, footerP);
+    		contactsP(headerL, headerR, footerP);
     	}
     	else if (history.peek().equals("contactsD")) {
     		history.pop();
@@ -160,7 +161,7 @@ public class GUI {
     }
     
     
-    public void landingPage(JPanel landingP, JPanel headerL, JPanel headerR, JPanel footerP) {
+    public void landingPage(JPanel headerL, JPanel headerR, JPanel footerP) {
     	
     	history.add("landing");
     	
@@ -184,7 +185,7 @@ public class GUI {
         JButton profileBut = new JButton("Profile");
         profileBut.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                profileP(landingP, headerL, headerR, footerP);
+                profileP(headerL, headerR, footerP);
             }
         });
         JButton contactsBut = new JButton("Contacts");
@@ -205,7 +206,7 @@ public class GUI {
         JButton newChatBut = new JButton("+ New Chat");
         newChatBut.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                chatViewP(landingP, headerL, headerR, footerP);
+                chatViewP(headerL, headerR, footerP);
             }
         });
         footerP.add(newChatBut, BorderLayout.CENTER);
@@ -215,7 +216,7 @@ public class GUI {
         revNrep(footerP);
     }
 
-    public void chatViewP(JPanel landingP, JPanel headerL, JPanel headerR, JPanel footerP) {
+    public void chatViewP(JPanel headerL, JPanel headerR, JPanel footerP) {
         
         headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
 
@@ -227,7 +228,7 @@ public class GUI {
         headerL.add(back);
         back.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                back(landingP, headerL, headerR, footerP);
+                back(headerL, headerR, footerP);
             }
         });
         JLabel chatName = new JLabel(friend);
@@ -258,7 +259,7 @@ public class GUI {
         cardLayout.show(mainP, "chat");
     }
     
-    public void profileP(JPanel landingP, JPanel headerL, JPanel headerR, JPanel footerP) {
+    public void profileP(JPanel headerL, JPanel headerR, JPanel footerP) {
     	
     	history.add("profile");
     	
@@ -275,7 +276,7 @@ public class GUI {
         back.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	profilePage.removeAll();
-                back(landingP, headerL, headerR, footerP);
+                back(headerL, headerR, footerP);
             }
         });
         headerL.add(back);
@@ -362,6 +363,12 @@ public class GUI {
         footerP.removeAll();
 
         JButton back = new JButton("← Back");
+        back.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	profilePage.removeAll();
+                back(headerL, headerR, footerP);
+            }
+        });
         headerL.add(back);
         JLabel header = new JLabel("Contacts");
         header.setFont(headerFont);
