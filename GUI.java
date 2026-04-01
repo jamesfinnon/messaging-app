@@ -213,6 +213,8 @@ public class GUI {
 
     public void chatViewP(JPanel headerL, JPanel headerR, JPanel footerP) {
         
+        history.add("chat");
+
         headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         headerL.removeAll();
@@ -350,6 +352,8 @@ public class GUI {
 
     public void contactsP(JPanel headerL, JPanel headerR, JPanel footerP) {
         
+        history.add("contactsP");
+
         headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         contactsPage.removeAll();
@@ -360,7 +364,7 @@ public class GUI {
         JButton back = new JButton("← Back");
         back.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	profilePage.removeAll();
+            	contactsPage.removeAll();
                 back(headerL, headerR, footerP);
             }
         });
