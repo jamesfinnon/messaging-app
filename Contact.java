@@ -1,7 +1,12 @@
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
+
+import javax.imageio.ImageIO;
 
 /**
  * Represents a contact in the messaging application.
@@ -16,13 +21,22 @@ public class Contact {
 	// ============ FIELDS ============
 
 	private String name;
+	private String username;
 	private String number;
 	private UUID id;
-	private URL profilePicture;
+	private BufferedImage profilePicture;
 	private Instant dateAdded;
 
 	// ============ CONSTRUCTORS ============
-
+	
+	public Contact() {
+		name = "";
+		setUsername("");
+		number = "";
+		id = UUID.randomUUID();
+		
+	}
+	
 	/**
 	 * Creates a new Contact with the specified details.
 	 * Sets dateAdded to the current time.
@@ -34,11 +48,12 @@ public class Contact {
 	 * @throws NullPointerException if name, number, or id is null
 	 * @throws IllegalArgumentException if name or number fails validation
 	 */
-	public Contact(String name, String number, UUID id, URL profilePicture) {
+	public Contact(String name, String username, String number, UUID id, String profilePicturePath) {
 		this.name = validateName(name);
+		this.setUsername(validateName(username));
 		this.number = validatePhoneNumber(number);
 		this.id = Objects.requireNonNull(id, "ID cannot be null");
-		this.profilePicture = profilePicture;
+		
 		this.dateAdded = Instant.now();
 	}
 
@@ -54,11 +69,11 @@ public class Contact {
 	 * @throws NullPointerException if name, number, id, or dateAdded is null
 	 * @throws IllegalArgumentException if name or number fails validation
 	 */
-	public Contact(String name, String number, UUID id, URL profilePicture, Instant dateAdded) {
+	public Contact(String name, String number, UUID id, String profilePicturePath, Instant dateAdded) {
 		this.name = validateName(name);
 		this.number = validatePhoneNumber(number);
 		this.id = Objects.requireNonNull(id, "ID cannot be null");
-		this.profilePicture = profilePicture;
+		setImage(profilePicturePath);
 		this.dateAdded = Objects.requireNonNull(dateAdded, "Date added cannot be null");
 	}
 
@@ -109,7 +124,7 @@ public class Contact {
 	 *
 	 * @return the contact's profile picture URL
 	 */
-	public URL getProfilePicture() {
+	public BufferedImage getProfilePicture() {
 		return profilePicture;
 	}
 
@@ -122,7 +137,11 @@ public class Contact {
 	public Instant getDateAdded() {
 		return dateAdded;
 	}
-
+	
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
 	// ============ SETTERS ============
 
 	/**
@@ -152,7 +171,7 @@ public class Contact {
 	 *
 	 * @param profilePicture the URL to the contact's profile picture
 	 */
-	public void setProfilePicture(URL profilePicture) {
+	public void setProfilePicture(BufferedImage profilePicture) {
 		this.profilePicture = profilePicture;
 	}
 
@@ -208,6 +227,11 @@ public class Contact {
 	public String getFormattedCard() {
 		return name + "\n" + number;
 	}
+	
+	public String getUsername() {
+		return username;
+	}
+
 
 	// ============ VALIDATION METHODS ============
 
@@ -356,7 +380,18 @@ public class Contact {
 				", dateAdded=" + dateAdded +
 				'}';
 	}
-
+	
+	public void setImage(String imagePath) {
+		try 
+		{
+			setProfilePicture(ImageIO.read(new File(imagePath)));
+		} 
+		catch (IOException e) 
+		{
+		    e.printStackTrace();
+		}
+	}
+	
 	// ============ BUILDER PATTERN ============
 
 	/**
@@ -377,7 +412,7 @@ public class Contact {
 		private String name;
 		private String number;
 		private UUID id;
-		private URL profilePicture;
+		private BufferedImage profilePicture;
 		private Instant dateAdded;
 
 		/**
