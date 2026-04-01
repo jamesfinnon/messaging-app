@@ -1,15 +1,21 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.util.Stack;
 
 public class GUI {
-    
+	
     //test variables
     Font headerFont = new Font("Arial", Font.BOLD, 18);
     String friend = new String("James Finnon");
     String profileName = new String("Faisal Yero");
     String userName = new String("fy123");
-
+    String phoneNo = new String("+44 482934 4289384");
+    
+    
+    Stack<String> history = new Stack<String>();
+    
     private JFrame window;
     private CardLayout cardLayout;
     private JPanel mainP;
@@ -34,8 +40,9 @@ public class GUI {
         });
 
     }
-
+    
     public void mainFrame() {
+    	
         window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setSize(442, 874);
@@ -106,10 +113,30 @@ public class GUI {
         window.setVisible(true);
         
     }
-
+    
+    //public void back (JPanel landingP, JPanel headerL, JPanel headerR, JPanel footerP) {
+    	//if (history.getFirst().equals("landing")) {
+    		//history.pop();
+    	//	landingPage(landingP, headerL, headerR, footerP);
+    	//}
+    	//else if (history.getFirst().equals("chat")) {
+    	//	history.pop();
+    //		chatPage(landingP, headerL, headerR, footerP);
+    //	}
+    //	else if (history.getFirst().equals("chat")) {
+    //		history.pop();
+    //		chatPage(landingP, headerL, headerR, footerP);
+    //	}
+    	
+    	
+   // }
+    
+    
     public void landingPage(JPanel landingP, JPanel headerL, JPanel headerR, JPanel footerP) {
-
-        headerL.setLayout(new BoxLayout(headerL, BoxLayout.Y_AXIS));
+    	
+    	history.add("landing");
+    	
+        //headerL.setLayout(new BoxLayout(headerL, BoxLayout.Y_AXIS));
 
         headerL.removeAll();
         headerR.removeAll();
@@ -139,7 +166,7 @@ public class GUI {
         
         //mp
         landingP.removeAll();
-        landingP.setLayout(new BorderLayout());
+        //landingP.setLayout(new BorderLayout());
 
         //fp
         JButton newChatBut = new JButton("+ New Chat");
@@ -148,7 +175,7 @@ public class GUI {
                 chatViewP(headerL, headerR, footerP);
             }
         });
-        footerP.add(newChatBut, BorderLayout.CENTER);
+        //footerP.add(newChatBut, BorderLayout.CENTER);
         
         revNrep(headerL);
         revNrep(headerR);
@@ -171,7 +198,8 @@ public class GUI {
 
         JTextField messageB = new JTextField();
         footerP.add(messageB, BorderLayout.CENTER);
-
+        
+        
         JButton sendBut = new JButton("Send =>");
         footerP.add(sendBut, BorderLayout.EAST);
 
@@ -193,6 +221,7 @@ public class GUI {
     }
     
     public void profileP(JPanel headerL, JPanel headerR, JPanel footerP) {
+    	Font titleFont = new Font("Arial", Font.BOLD, 14);
 
         headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
 
@@ -234,23 +263,45 @@ public class GUI {
         //JPanel iP1 = new JPanel();
         //iP1.setLayout(new BoxLayout(iP1, BoxLayout.Y_AXIS));
         //iP1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+        
+        
+        JPanel userPanel = new JPanel(new GridLayout(2, 1));
+        userPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        
+        JLabel userT = new JLabel("Username: ");
+        userT.setFont(titleFont);
+        userPanel.add(userT);
+        userPanel.add(new JLabel(userName));
 
-        JLabel tID = new JLabel("ID");
-        tID.setAlignmentX(Component.RIGHT_ALIGNMENT);
-        tID.add(Box.createHorizontalGlue(LEFT_ALIGNMENT));
-        profilePage.add(tID);
-
-        JLabel userH = new JLabel(userName);
-        userH.setAlignmentX(Component.RIGHT_ALIGNMENT);
-        profilePage.add(userH);
+        profilePage.add(userPanel);
 
         //profilePage.add(iP1);
 
         JSeparator separ1 = new JSeparator(JSeparator.HORIZONTAL);
         separ1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
         profilePage.add(separ1);
+        
+        JPanel phonePanel = new JPanel(new GridLayout(2, 1));
+        phonePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        
+        JLabel phoneT = new JLabel("Phone No: ");
+        phoneT.setFont(titleFont);
+        phonePanel.add(phoneT);
+        phonePanel.add(new JLabel(phoneNo));
 
-
+        profilePage.add(phonePanel);
+        
+        JSeparator separ2 = new JSeparator(JSeparator.HORIZONTAL);
+        separ2.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
+        profilePage.add(separ2);
+        
+        JPanel editPPanel = new JPanel(new GridLayout(1,1));
+        editPPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        JButton editProfile = new JButton("Edit Profile");
+        editProfile.setMaximumSize(new Dimension(Integer.MAX_VALUE, editProfile.getPreferredSize().height));
+        editPPanel.add(editProfile);
+        profilePage.add(editPPanel);
+        
 
         revNrep(headerL);
         revNrep(headerR);
