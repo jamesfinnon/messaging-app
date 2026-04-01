@@ -2,10 +2,24 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class GUI {  
+public class GUI {
+    
+    //test variables
+    Font headerFont = new Font("Arial", Font.BOLD, 18);
+    String friend = new String("James Finnon");
+    String profileName = new String("Faisal Yero");
+    String userName = new String("fy123");
+
     private JFrame window;
     private CardLayout cardLayout;
     private JPanel mainP;
+    private JPanel chatView;
+    private JPanel profilePage;
+    private JPanel contactsPage;
+    private JPanel contactsDet;
+    private JPanel contactsNew;
+    private JPanel searchPage;
+    private JPanel newChats;
     public static void main(String[] args) {
         // use the Swing 'invokeLater' method to create a new
         // Runnable object to run on the EDT
@@ -51,32 +65,36 @@ public class GUI {
         footerP.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.LineBorder(Color.BLACK, 1), new javax.swing.border.EmptyBorder(5, 5, 5, 5)));
 
         //mp 
-        JPanel mainP = new JPanel(new CardLayout());
+        mainP = new JPanel(new CardLayout());
+        cardLayout = (CardLayout) mainP.getLayout();
         mainP.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.LineBorder(Color.BLACK, 1), new javax.swing.border.EmptyBorder(15, 15, 15, 15)));
 
         //different mps
         JPanel landingP = new JPanel(new BorderLayout());
         mainP.add(landingP, "landing");
         
-        JPanel chatView = new JPanel(new BorderLayout());
+        chatView = new JPanel();
+        chatView.setLayout(new BoxLayout(chatView, BoxLayout.Y_AXIS));
         mainP.add(chatView, "chat");
         
-        JPanel profilePage = new JPanel(new BorderLayout());
+        profilePage = new JPanel();
+        profilePage.setLayout(new BoxLayout(profilePage, BoxLayout.Y_AXIS));
+        profilePage.setAlignmentX(Component.LEFT_ALIGNMENT);
         mainP.add(profilePage, "profile");
 
-        JPanel contactsPage = new JPanel(new BorderLayout());
+        contactsPage = new JPanel(new BorderLayout());
         mainP.add(contactsPage, "contactsP");
 
-        JPanel contactsDet = new JPanel(new BorderLayout());
+        contactsDet = new JPanel(new BorderLayout());
         mainP.add(contactsDet, "contactsD");
 
-        JPanel contactsNew = new JPanel(new BorderLayout());
+        contactsNew = new JPanel(new BorderLayout());
         mainP.add(contactsNew, "contactsN");
 
-        JPanel searchPage = new JPanel(new BorderLayout());
+        searchPage = new JPanel(new BorderLayout());
         mainP.add(searchPage, "search");
 
-        JPanel newChats = new JPanel(new BorderLayout());
+        newChats = new JPanel(new BorderLayout());
         mainP.add(newChats, "chatsN");
 
         window.add(headerP, BorderLayout.NORTH);
@@ -90,9 +108,6 @@ public class GUI {
     }
 
     public void landingPage(JPanel landingP, JPanel headerL, JPanel headerR, JPanel footerP) {
-        //font
-        Font headerFont = new Font("Arial", Font.BOLD, 18);
-        String profileName = new String("Faisal S Yero");
 
         headerL.setLayout(new BoxLayout(headerL, BoxLayout.Y_AXIS));
 
@@ -141,9 +156,7 @@ public class GUI {
     }
 
     public void chatViewP(JPanel headerL, JPanel headerR, JPanel footerP) {
-        Font headerFont = new Font("Arial", Font.BOLD, 18);
-        String friend = new String("James Finnon");
-
+        
         headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         headerL.removeAll();
@@ -165,6 +178,10 @@ public class GUI {
         JButton searchBut = new JButton("Search ⌕");
         headerR.add(searchBut);
 
+        JSeparator separ = new JSeparator(JSeparator.VERTICAL);
+        separ.setMaximumSize(new Dimension(2, Integer.MAX_VALUE));
+        profilePage.add(separ);
+
         JButton conInfBut = new JButton(":");
         headerR.add(conInfBut);
 
@@ -176,10 +193,10 @@ public class GUI {
     }
     
     public void profileP(JPanel headerL, JPanel headerR, JPanel footerP) {
-        Font headerFont = new Font("Arial", Font.BOLD, 18);
 
         headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
 
+        profilePage.removeAll();
         headerL.removeAll();
         headerR.removeAll();
         footerP.removeAll();
@@ -190,9 +207,55 @@ public class GUI {
         myProfile.setFont(headerFont);
         headerL.add(myProfile);
 
+        //profilepic
+        JPanel picWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        picWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
+        JLabel profilePic = new JLabel();
+        profilePic.setPreferredSize(new Dimension(100,100));
+        profilePic.setMaximumSize(profilePic.getPreferredSize());
+        profilePic.setBorder(new javax.swing.border.LineBorder(Color.BLACK, 2));
+        profilePic.setHorizontalAlignment(JLabel.CENTER);
+        profilePic.setVerticalAlignment(JLabel.CENTER);
+        profilePic.setText("[Photo]");
+        profilePic.setForeground(Color.BLACK);
+
+        picWrapper.add(profilePic);
+        profilePage.add(picWrapper);
+
+        JLabel profileH = new JLabel(profileName);
+        profileH.setFont(headerFont);
+        profileH.setAlignmentX(Component.CENTER_ALIGNMENT);
+        profilePage.add(profileH);
+
+        JSeparator separ = new JSeparator(JSeparator.HORIZONTAL);
+        separ.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
+        profilePage.add(separ);
+
+        //JPanel iP1 = new JPanel();
+        //iP1.setLayout(new BoxLayout(iP1, BoxLayout.Y_AXIS));
+        //iP1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+
+        JLabel tID = new JLabel("ID");
+        tID.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        tID.add(Box.createHorizontalGlue(LEFT_ALIGNMENT));
+        profilePage.add(tID);
+
+        JLabel userH = new JLabel(userName);
+        userH.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        profilePage.add(userH);
+
+        //profilePage.add(iP1);
+
+        JSeparator separ1 = new JSeparator(JSeparator.HORIZONTAL);
+        separ1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
+        profilePage.add(separ1);
+
+
+
         revNrep(headerL);
         revNrep(headerR);
         revNrep(footerP);
+        revNrep(profilePage);
 
         cardLayout.show(mainP, "profile");
     }
