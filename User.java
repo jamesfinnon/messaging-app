@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class User extends Contact {
     private ArrayList<Contact> contacts;
@@ -9,6 +11,7 @@ public class User extends Contact {
     
 	public void addContact(Contact contact) {
 		contacts.add(contact);
+		Collections.sort(contacts, Comparator.comparing(Contact::getName));
 	}
     
 	public ArrayList<Contact> searchContacts(String searchWord, int searchBy) {
@@ -20,7 +23,7 @@ public class User extends Contact {
 			for (int i = 0; i < contacts.size(); i++) {
 				contact = contacts.get(i);
 				
-				if (contacts.get(i).getName().contains(searchWord)) {
+				if (contacts.get(i).getName().toLowerCase().contains(searchWord.toLowerCase())) {
 					matches.add(contact);
 				}
 			}
@@ -35,9 +38,6 @@ public class User extends Contact {
 			}
 		}
 		return matches;
-		
-		
-		
 	}
 	
     // getters and setters
