@@ -155,7 +155,7 @@ public class GUI {
             history.pop();
     	}
     	else if (history.peek().equals("contactsN")) {  
-    		//contactsN(headerL, headerR, footerP);
+    		contactsN(headerL, headerR, footerP);
             history.pop();
     	}
     	else if (history.peek().equals("search")) {
@@ -362,6 +362,11 @@ public class GUI {
         editPPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         JButton editProfile = new JButton("Edit Profile");
         editProfile.setMaximumSize(new Dimension(Integer.MAX_VALUE, editProfile.getPreferredSize().height));
+        editProfile.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                contactsN(headerL, headerR, footerP);
+            }
+        });
         editPPanel.add(editProfile);
         profilePage.add(editPPanel);
         
@@ -537,7 +542,7 @@ public class GUI {
         separ3.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
         contactsDet.add(separ3);
 
-        JButton topButton = new JButton("Send Message");
+        JButton message = new JButton("Send Message");
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -545,23 +550,33 @@ public class GUI {
         gbc.weightx = 1.0;
         gbc.weighty = 0.5; 
         gbc.insets = new Insets(2, 2, 2, 2);
-        footerP.add(topButton, gbc);
+        message.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                chatP(headerL, headerR, footerP);
+            }
+        });
+        footerP.add(message, gbc);
 
-        JButton bottomLeft = new JButton("Edit");
+        JButton edit = new JButton("Edit");
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         gbc.weightx = 0.5;
         gbc.weighty = 0.5;
-        footerP.add(bottomLeft, gbc);
+        edit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                contactsN(headerL, headerR, footerP);
+            }
+        });
+        footerP.add(edit, gbc);
 
-        JButton bottomRight = new JButton("Delete");
+        JButton delete = new JButton("Delete");
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         gbc.weightx = 0.5;
         gbc.weighty = 0.5;
-        footerP.add(bottomRight, gbc);
+        footerP.add(delete, gbc);
 
         revNrep(headerL);
         revNrep(headerR);
