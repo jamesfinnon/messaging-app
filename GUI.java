@@ -121,11 +121,31 @@ public class GUI {
     	}
     	else if (history.getFirst().equals("chat")) {
     		history.pop();
-    		chatPage(headerL, headerR, footerP);
+    		chatP(landingP, headerL, headerR, footerP);
     	}
     	else if (history.getFirst().equals("profile")) {
     		history.pop();
-    		profileP(headerL, headerR, footerP);
+    		profileP(landingP, headerL, headerR, footerP);
+    	}
+    	else if (history.getFirst().equals("contactsP")) {
+    		history.pop();
+    		contactsP(landingP, headerL, headerR, footerP);
+    	}
+    	else if (history.getFirst().equals("contactsD")) {
+    		history.pop();
+    		contactsD(landingP, headerL, headerR, footerP);
+    	}
+    	else if (history.getFirst().equals("contactsN")) {
+    		history.pop();
+    		contactsN(landingP, headerL, headerR, footerP);
+    	}
+    	else if (history.getFirst().equals("search")) {
+    		history.pop();
+    		searchP(landingP, headerL, headerR, footerP);
+    	}
+    	else if (history.getFirst().equals("chatsN")) {
+    		history.pop();
+    		chatsN(landingP, headerL, headerR, footerP);
     	}
     	
     	
@@ -156,7 +176,7 @@ public class GUI {
         JButton profileBut = new JButton("Profile");
         profileBut.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                profileP(headerL, headerR, footerP);
+                profileP(landingP, headerL, headerR, footerP);
             }
         });
         JButton contactsBut = new JButton("Contacts");
@@ -172,7 +192,7 @@ public class GUI {
         JButton newChatBut = new JButton("+ New Chat");
         newChatBut.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                chatViewP(headerL, headerR, footerP);
+                chatViewP(landingP, headerL, headerR, footerP);
             }
         });
         //footerP.add(newChatBut, BorderLayout.CENTER);
@@ -182,7 +202,7 @@ public class GUI {
         revNrep(footerP);
     }
 
-    public void chatViewP(JPanel headerL, JPanel headerR, JPanel footerP) {
+    public void chatViewP(JPanel landingP, JPanel headerL, JPanel headerR, JPanel footerP) {
         
         headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
 
@@ -192,6 +212,11 @@ public class GUI {
 
         JButton back = new JButton("← Back");
         headerL.add(back);
+        back.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                back(landingP, headerL, headerR, footerP);
+            }
+        });
         JLabel chatName = new JLabel(friend);
         chatName.setFont(headerFont);
         headerL.add(chatName);
@@ -220,7 +245,7 @@ public class GUI {
         cardLayout.show(mainP, "chat");
     }
     
-    public void profileP(JPanel headerL, JPanel headerR, JPanel footerP) {
+    public void profileP(JPanel landingP, JPanel headerL, JPanel headerR, JPanel footerP) {
     	
     	history.add("profile");
     	
