@@ -27,7 +27,7 @@ public class Message {
                         .withZone(ZoneId.systemDefault());
     	
     	return formatter.format(time);
-    }	
+    }
 	
 	// getters and setters for fields
 	public String getContent() {
