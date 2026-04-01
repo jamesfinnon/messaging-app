@@ -10,7 +10,7 @@ public class GUI {
     Font headerFont = new Font("Arial", Font.BOLD, 18);
     String friend = new String("James Finnon");
     String profileName = new String("Faisal Yero");
-    String userName = new String("fy123");
+    String userName = new String("faisalyero123");
     String phoneNo = new String("+44 482934 4289384");
     
     
@@ -136,7 +136,7 @@ public class GUI {
     	
     	history.add("landing");
     	
-        //headerL.setLayout(new BoxLayout(headerL, BoxLayout.Y_AXIS));
+        headerL.setLayout(new BoxLayout(headerL, BoxLayout.Y_AXIS));
 
         headerL.removeAll();
         headerR.removeAll();
@@ -160,13 +160,18 @@ public class GUI {
             }
         });
         JButton contactsBut = new JButton("Contacts");
+        contactsBut.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                contactsP( headerL,  headerR,  footerP);
+            }
+        });
         headerR.add(searchBut);
         headerR.add(profileBut);
         headerR.add(contactsBut);
         
         //mp
         landingP.removeAll();
-        //landingP.setLayout(new BorderLayout());
+        landingP.setLayout(new BorderLayout());
 
         //fp
         JButton newChatBut = new JButton("+ New Chat");
@@ -175,7 +180,7 @@ public class GUI {
                 chatViewP(headerL, headerR, footerP);
             }
         });
-        //footerP.add(newChatBut, BorderLayout.CENTER);
+        footerP.add(newChatBut, BorderLayout.CENTER);
         
         revNrep(headerL);
         revNrep(headerR);
@@ -208,7 +213,7 @@ public class GUI {
 
         JSeparator separ = new JSeparator(JSeparator.VERTICAL);
         separ.setMaximumSize(new Dimension(2, Integer.MAX_VALUE));
-        profilePage.add(separ);
+        chatView.add(separ);
 
         JButton conInfBut = new JButton(":");
         headerR.add(conInfBut);
@@ -309,6 +314,32 @@ public class GUI {
         revNrep(profilePage);
 
         cardLayout.show(mainP, "profile");
+    }
+
+    public void contactsP(JPanel headerL, JPanel headerR, JPanel footerP) {
+        
+        headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+        contactsPage.removeAll();
+        headerL.removeAll();
+        headerR.removeAll();
+        footerP.removeAll();
+
+        JButton back = new JButton("← Back");
+        headerL.add(back);
+        JLabel header = new JLabel("Contacts");
+        header.setFont(headerFont);
+        headerL.add(header);
+
+        JButton searchBut = new JButton("Search ⌕");
+        headerR.add(searchBut);
+
+        revNrep(headerL);
+        revNrep(headerR);
+        revNrep(footerP);
+        revNrep(contactsPage);
+
+        cardLayout.show(mainP, "contactsP");
     }
 
     public void revNrep(JPanel panel) {
