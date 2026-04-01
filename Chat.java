@@ -1,5 +1,5 @@
-import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Set;
 
 public class Chat {
     private LinkedList<Message> messages;
@@ -13,12 +13,13 @@ public class Chat {
 		this.messages = messages;
 	}
 
-	public ArrayList<Contact> getChatMembers() {
+	public Set<Contact> getChatMembers() {
 		return chatMembers;
 	}
 
-	public void setChatMembers(ArrayList<Contact> chatMembers) {
+	public void setChatMembers(Set<Contact> chatMembers) {
 		this.chatMembers = chatMembers;
 	}
      
 }
+
