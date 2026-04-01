@@ -33,11 +33,11 @@ public class Contact {
 	 * @author jamesfinnon
 	 */
 	public Contact() {
-		name = "";
-		username = "";
-		number = "";
+		name = "John Doe";
+		username = "johndoe123";
+		number = "+44 7123 456789";
 		id = UUID.randomUUID();
-		setImage("/defaultUser.jpg");
+		setImage("src/defaultUser.jpg");
 		this.dateAdded = Instant.now();
 		
 	}
@@ -124,7 +124,7 @@ public class Contact {
             throw new IllegalArgumentException(fieldName + " cannot be blank");
         return value.trim();
     }
-	
+    
 	/**
 	 * @author jamesfinnon
 	 * 
@@ -194,4 +194,3 @@ public class Contact {
 		this.username = username;
 	}
 }
-
