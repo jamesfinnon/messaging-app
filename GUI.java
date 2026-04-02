@@ -176,7 +176,7 @@ public class GUI {
             history.pop();
     	}
     	else if (history.peek().equals("contactsD")) {		
-    		contactsD(headerL, headerR, footerP);
+    		//contactsD(headerL, headerR, footerP);
             history.pop();
     	}
         else if (history.peek().equals("contactsEdit")) {	
@@ -306,7 +306,7 @@ public class GUI {
         JButton conInfBut = new JButton(":");
         conInfBut.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                contactsD(headerL, headerR, footerP);
+      //          contactsD(headerL, headerR, footerP);
             }
         });
         headerR.add(conInfBut);
@@ -423,11 +423,12 @@ public class GUI {
     }
 
     public void contactsP(JPanel headerL, JPanel headerR, JPanel footerP) {
-        
+
         history.add("contactsP");
 
         headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
         footerP.setLayout(new BorderLayout());
+        contactsPage.setLayout(new BorderLayout());
 
         contactsPage.removeAll();
         headerL.removeAll();
@@ -435,33 +436,26 @@ public class GUI {
         footerP.removeAll();
 
         JButton back = new JButton("← Back");
-        back.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            	contactsPage.removeAll();
-                back(headerL, headerR, footerP);
-            }
+        back.addActionListener(e -> {
+            contactsPage.removeAll();
+            back(headerL, headerR, footerP);
         });
+
         headerL.add(back);
+
         JLabel header = new JLabel("Contacts");
         header.setFont(headerFont);
         headerL.add(header);
 
         JButton searchBut = new JButton("Search ⌕");
-        searchBut.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                searchP(headerL, headerR, footerP);
-            }
-        });
+        searchBut.addActionListener(e -> searchP(headerL, headerR, footerP));
         headerR.add(searchBut);
 
         JButton newCon = new JButton("Add Contacts");
-        newCon.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                contactsN(headerL, headerR, footerP);
-            }
-        });
+        newCon.addActionListener(e -> contactsN(headerL, headerR, footerP));
         footerP.add(newCon, BorderLayout.CENTER);
 
+        // Sorting buttons
         JPanel sortH = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 0));
         JButton alphaSort = new JButton("Alphabetical");
         JButton chronSort = new JButton("Recent");
@@ -469,24 +463,30 @@ public class GUI {
         sortH.add(alphaSort);
         sortH.add(chronSort);
         contactsPage.add(sortH, BorderLayout.NORTH);
-        
-        JPanel resCon = new JPanel(new GridLayout(activeUser.getContactsSize(),1));
+
+        // Contacts container
+        JPanel resCon = new JPanel();
+        resCon.setLayout(new BoxLayout(resCon, BoxLayout.Y_AXIS)); // better than GridLayout
+
         JScrollPane scroll = new JScrollPane(resCon);
-        contactsPage.add(scroll, BorderLayout.EAST);
-        contactsPage.add(resCon);
-        
-        Contact tempContact = new Contact();
-        
+
+        // Populate contacts
         for (int i = 0; i < activeUser.getContactsSize(); i++) {
-        	tempContact = activeUser.getContacts().get(i);
-        	JButton contact = new JButton(tempContact.getName());
-            back.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                	
-                }
+
+            var contactObj = activeUser.getContacts().get(i); // ✅ fix capture
+
+            JButton contactBtn = new JButton(contactObj.getName());
+
+            contactBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            contactBtn.addActionListener(e -> {
+                contactsD(headerL, headerR, footerP, contactObj);
             });
-        	
+
+            resCon.add(contactBtn);
         }
+
+        contactsPage.add(scroll, BorderLayout.CENTER);
 
         revNrep(headerL);
         revNrep(headerR);
@@ -495,8 +495,9 @@ public class GUI {
 
         cardLayout.show(mainP, "contactsP");
     }
+    
 
-    public void contactsD(JPanel headerL, JPanel headerR, JPanel footerP) {
+    public void contactsD(JPanel headerL, JPanel headerR, JPanel footerP, Contact contact) {
 
         history.add("contactD");
 
@@ -654,6 +655,7 @@ public class GUI {
     public void contactsN(JPanel headerL, JPanel headerR, JPanel footerP) {
 
         history.add("contactsN");
+        Contact tempContact = new Contact();
 
         Font titleFont = new Font("Arial", Font.BOLD, 14);
 
@@ -683,11 +685,9 @@ public class GUI {
         JTextField text3 = new JTextField();
         
         JButton save = new JButton("Save");
-        back.addActionListener(new ActionListener() {
+        save.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	
-            	Contact tempContact = new Contact();
-            	     	
             	tempContact.setName(text1.getText());
             	tempContact.setUsername(text2.getText());
             	tempContact.setNumber(text3.getText());
@@ -719,11 +719,22 @@ public class GUI {
         picWrapper.add(profilePic);
         contactsNew.add(picWrapper);
 
-        JButton profileH = new JButton("Add Photo");
-        profileH.setFont(headerFont);
+        JButton addPhoto = new JButton("Add Photo");
+        addPhoto.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	tempContact.chooseImage();
+            	
+            	BufferedImage img = tempContact.getProfilePicture();
+                Image scaled = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                profilePic.setIcon(new ImageIcon(scaled));
+            }
+        });
+        
+        
+        addPhoto.setFont(headerFont);
         JPanel profileHWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
-        profileHWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, profileH.getPreferredSize().height));
-        profileHWrapper.add(profileH);
+        profileHWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, addPhoto.getPreferredSize().height));
+        profileHWrapper.add(addPhoto);
         contactsNew.add(profileHWrapper);
 
         JPanel userPanel = new JPanel(new GridLayout(6, 1));
@@ -772,6 +783,7 @@ public class GUI {
     public void profileE(JPanel headerL, JPanel headerR, JPanel footerP) {
 
         history.add("Eprofile");
+        User tempUser = new User();
 
         Font titleFont = new Font("Arial", Font.BOLD, 14);
 
@@ -786,9 +798,14 @@ public class GUI {
         JButton back = new JButton("← Back");
         back.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	JOptionPane.showConfirmDialog(null, "Are you sure you want to discard all changes?");
-            	profileEdit.removeAll();
-                back(headerL, headerR, footerP);
+            	if (0 == JOptionPane.showConfirmDialog(null, "Are you sure you want to discard all changes?")) {
+            		profileEdit.removeAll();
+                    back(headerL, headerR, footerP);
+            	}
+            	else {
+            		return;
+            	}
+            
             }
         });
         
@@ -809,6 +826,7 @@ public class GUI {
         JButton save = new JButton("Save");
         save.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	activeUser.setProfilePicture(tempUser.getProfilePicture());
                 activeUser.setName(text1.getText());
                 activeUser.setUsername(text2.getText());
                 activeUser.setNumber(text3.getText());
@@ -842,9 +860,9 @@ public class GUI {
         JButton profileH = new JButton("Add Photo");
         profileH.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	activeUser.chooseImage();
+            	tempUser.chooseImage();
             	
-            	BufferedImage img = activeUser.getProfilePicture();
+            	BufferedImage img = tempUser.getProfilePicture();
                 Image scaled = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
                 profilePic.setIcon(new ImageIcon(scaled));
             }
