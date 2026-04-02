@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
 /**
  * Represents a contact in the messaging application.
@@ -102,14 +103,23 @@ public class Contact {
      * @param number
      * @return validated number
      */
-    private static String validateNumber(String number) {
+    private String validateNumber(String number) {
         String trimmedNumber = validateAndTrim(number, "Phone number");
-        if (!trimmedNumber.matches("[0-9+\\-()\\s]+"))
-            throw new IllegalArgumentException("Phone number contains invalid characters");
-        long digitCount = trimmedNumber.chars().filter(Character::isDigit).count();
-        if (digitCount < 7 || digitCount > 15)
-            throw new IllegalArgumentException("Phone number must contain 7-15 digits");
-        return trimmedNumber;
+        if (!trimmedNumber.matches("[0-9+\\-()\\s]+")) {
+            JOptionPane.showMessageDialog(null, "Phone number contains invalid characters.");
+        	return getNumber();
+        }
+        
+        else {
+        	long digitCount = trimmedNumber.chars().filter(Character::isDigit).count();
+        	if (digitCount < 7 || digitCount > 15) {
+        		JOptionPane.showMessageDialog(null, "Phone number must contain 7-15 digits");
+        		return getNumber();
+        	}
+        	return trimmedNumber;
+        }
+        		
+        
     }
 
     /**
@@ -121,10 +131,10 @@ public class Contact {
      */
     private static String validateAndTrim(String value, String fieldName) {
         if (value == null || value.trim().isEmpty())
-            throw new IllegalArgumentException(fieldName + " cannot be blank");
+        	JOptionPane.showMessageDialog(null, fieldName + " cannot be blank");
         return value.trim();
     }
-    
+
 	/**
 	 * @author jamesfinnon
 	 * 
