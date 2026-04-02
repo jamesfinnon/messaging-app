@@ -6,7 +6,7 @@ public class User extends Contact {
     private ArrayList<Contact> contacts;
     
     public User() {
-    	ArrayList<Contact> contacts = new ArrayList<Contact>();    	   	
+    	contacts = new ArrayList<Contact>();    	   	
     }
     
 	public void addContact(Contact contact) {
@@ -54,7 +54,17 @@ public class User extends Contact {
 		}
 		return matches;
 	}
-
+	
+	public int getContactsSize() {
+		if (contacts == null) {
+			return 0;
+		}
+		else {
+			return contacts.size();
+		}
+		
+	}
+	
     // getters and setters
 	public ArrayList<Contact> getContacts() {
 		return contacts;
