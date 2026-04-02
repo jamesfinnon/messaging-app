@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Stack;
 
 public class GUI {
@@ -16,6 +17,9 @@ public class GUI {
     String message1 = new String("hello");
     String message2 = new String("goodbye");
     
+    ArrayList<User> users = new ArrayList<User>();
+    User activeUser;
+    		
     
     Stack<String> history = new Stack<String>();
     
@@ -48,6 +52,11 @@ public class GUI {
     }
     
     public void mainFrame() {
+    	
+    	User newUser = new User();
+    	activeUser = newUser;
+    	
+    	addUser(newUser);
     	
         window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -134,6 +143,10 @@ public class GUI {
         
     }
     
+    public void addUser(User user) {
+    	users.add(user);
+    }
+    
     /**
      * @author jamesfinnon
      * 
@@ -208,7 +221,7 @@ public class GUI {
         headerL.add(Box.createVerticalStrut(3));
         headerL.add(appName);
         headerL.add(Box.createVerticalStrut(8));
-        JLabel mainPName = new JLabel("Your name: "+ profileName);
+        JLabel mainPName = new JLabel("Your name: "+ activeUser.getName());
         headerL.add(mainPName);
         
         //rhp
@@ -267,7 +280,7 @@ public class GUI {
         headerL.add(back);
         back.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                chatView.removeAll();
+            	chatView.removeAll();
                 back(headerL, headerR, footerP);
             }
         });
@@ -346,7 +359,7 @@ public class GUI {
         picWrapper.add(profilePic);
         profilePage.add(picWrapper);
 
-        JLabel profileH = new JLabel(profileName);
+        JLabel profileH = new JLabel(activeUser.getName());
         profileH.setFont(headerFont);
         profileH.setAlignmentX(Component.CENTER_ALIGNMENT);
         profilePage.add(profileH);
@@ -362,7 +375,7 @@ public class GUI {
         JLabel userT = new JLabel("Username: ");
         userT.setFont(titleFont);
         userPanel.add(userT);
-        userPanel.add(new JLabel(userName));
+        userPanel.add(new JLabel(activeUser.getUsername()));
 
         profilePage.add(userPanel);
 
@@ -376,7 +389,7 @@ public class GUI {
         JLabel phoneT = new JLabel("Phone No: ");
         phoneT.setFont(titleFont);
         phonePanel.add(phoneT);
-        phonePanel.add(new JLabel(phoneNo));
+        phonePanel.add(new JLabel(activeUser.getNumber()));
 
         profilePage.add(phonePanel);
         
@@ -453,10 +466,23 @@ public class GUI {
         sortH.add(chronSort);
         contactsPage.add(sortH, BorderLayout.NORTH);
 
-        JPanel resCon = new JPanel(new GridLayout(20,1));
+        JPanel resCon = new JPanel(new GridLayout(activeUser.getContacts().size(),1));
         JScrollPane scroll = new JScrollPane(resCon);
         contactsPage.add(scroll, BorderLayout.EAST);
         contactsPage.add(resCon);
+        
+        Contact tempContact = new Contact();
+        
+        for (int i = 0; i < activeUser.getContacts().size(); i++) {
+        	tempContact = activeUser.getContacts().get(i);
+        	JButton contact = new JButton(tempContact.getName());
+            back.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                	
+                }
+            });
+        	
+        }
 
         revNrep(headerL);
         revNrep(headerR);
