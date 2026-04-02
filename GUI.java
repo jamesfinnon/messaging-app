@@ -353,7 +353,11 @@ public class GUI {
         profilePic.setBorder(new javax.swing.border.LineBorder(Color.BLACK, 2));
         profilePic.setHorizontalAlignment(JLabel.CENTER);
         profilePic.setVerticalAlignment(JLabel.CENTER);
-        profilePic.setText("[Photo]");
+        
+        BufferedImage img = activeUser.getProfilePicture();
+        Image scaled = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        profilePic.setIcon(new ImageIcon(scaled));
+        
         profilePic.setForeground(Color.BLACK);
 
         picWrapper.add(profilePic);
@@ -465,15 +469,15 @@ public class GUI {
         sortH.add(alphaSort);
         sortH.add(chronSort);
         contactsPage.add(sortH, BorderLayout.NORTH);
-
-        JPanel resCon = new JPanel(new GridLayout(activeUser.getContacts().size(),1));
+        
+        JPanel resCon = new JPanel(new GridLayout(activeUser.getContactsSize(),1));
         JScrollPane scroll = new JScrollPane(resCon);
         contactsPage.add(scroll, BorderLayout.EAST);
         contactsPage.add(resCon);
         
         Contact tempContact = new Contact();
         
-        for (int i = 0; i < activeUser.getContacts().size(); i++) {
+        for (int i = 0; i < activeUser.getContactsSize(); i++) {
         	tempContact = activeUser.getContacts().get(i);
         	JButton contact = new JButton(tempContact.getName());
             back.addActionListener(new ActionListener() {
@@ -529,7 +533,11 @@ public class GUI {
         profilePic.setBorder(new javax.swing.border.LineBorder(Color.BLACK, 2));
         profilePic.setHorizontalAlignment(JLabel.CENTER);
         profilePic.setVerticalAlignment(JLabel.CENTER);
-        profilePic.setText("[Photo]");
+        
+        BufferedImage img = activeUser.getProfilePicture();
+        Image scaled = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        profilePic.setIcon(new ImageIcon(scaled));
+        
         profilePic.setForeground(Color.BLACK);
 
         picWrapper.add(profilePic);
@@ -666,11 +674,30 @@ public class GUI {
         });
         
         headerL.add(back);
-        JLabel myProfile = new JLabel("Add Contact");
-        myProfile.setFont(headerFont);
-        headerL.add(myProfile);
-
+        JLabel header = new JLabel("Add Contact");
+        header.setFont(headerFont);
+        headerL.add(header);
+        
+        JTextField text1 = new JTextField();
+        JTextField text2 = new JTextField();
+        JTextField text3 = new JTextField();
+        
         JButton save = new JButton("Save");
+        back.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	
+            	Contact tempContact = new Contact();
+            	     	
+            	tempContact.setName(text1.getText());
+            	tempContact.setUsername(text2.getText());
+            	tempContact.setNumber(text3.getText());
+            	
+            	activeUser.addContact(tempContact);
+        
+                profileEdit.removeAll();
+                back(headerL, headerR, footerP);
+            }
+        });
         headerR.add(save);
 
         //profilepic
@@ -682,7 +709,11 @@ public class GUI {
         profilePic.setBorder(new javax.swing.border.LineBorder(Color.BLACK, 2));
         profilePic.setHorizontalAlignment(JLabel.CENTER);
         profilePic.setVerticalAlignment(JLabel.CENTER);
-        profilePic.setText("[Photo]");
+        
+        BufferedImage img = activeUser.getProfilePicture();
+        Image scaled = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        profilePic.setIcon(new ImageIcon(scaled));
+        
         profilePic.setForeground(Color.BLACK);
 
         picWrapper.add(profilePic);
@@ -701,20 +732,22 @@ public class GUI {
         JLabel nameF = new JLabel("Name");
         nameF.setFont(titleFont);
         userPanel.add(nameF);
-        JTextField text1 = new JTextField();
+        
         userPanel.add(text1);
+        
+        JLabel usNaF = new JLabel("Username");
+        usNaF.setFont(titleFont);
+        userPanel.add(usNaF);
+        
+        userPanel.add(text2);
 
         JLabel pNoF = new JLabel("Phone No");
         pNoF.setFont(titleFont);
         userPanel.add(pNoF);
-        JTextField text2 = new JTextField();
-        userPanel.add(text2);
-
-        JLabel usNaF = new JLabel("Username");
-        usNaF.setFont(titleFont);
-        userPanel.add(usNaF);
-        JTextField text3 = new JTextField();
+        
         userPanel.add(text3);
+
+        
 
         contactsNew.add(userPanel);
 
@@ -726,6 +759,16 @@ public class GUI {
         cardLayout.show(mainP, "contactsN");
     }
 
+    /**
+     * page for editing your profile
+     * 
+     * @author faisalsyero
+     * @author jamesfinnon
+     * 
+     * @param headerL
+     * @param headerR
+     * @param footerP
+     */
     public void profileE(JPanel headerL, JPanel headerR, JPanel footerP) {
 
         history.add("Eprofile");
@@ -743,19 +786,40 @@ public class GUI {
         JButton back = new JButton("← Back");
         back.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	JOptionPane.showConfirmDialog(null, "Are you sure you want to discard all changes?");
             	profileEdit.removeAll();
                 back(headerL, headerR, footerP);
             }
         });
         
         headerL.add(back);
-        JLabel myProfile = new JLabel("Edit Profile");
-        myProfile.setFont(headerFont);
-        headerL.add(myProfile);
-
+        JLabel header = new JLabel("Edit Profile");
+        header.setFont(headerFont);
+        headerL.add(header);
+        
+        JTextField text1 = new JTextField();
+        text1.setText(activeUser.getName());
+        
+        JTextField text2 = new JTextField();
+        text2.setText(activeUser.getUsername());
+        
+        JTextField text3 = new JTextField();
+        text3.setText(activeUser.getNumber());
+        
         JButton save = new JButton("Save");
+        save.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                activeUser.setName(text1.getText());
+                activeUser.setUsername(text2.getText());
+                activeUser.setNumber(text3.getText());
+        
+                profileEdit.removeAll();
+                back(headerL, headerR, footerP);
+            }
+        });
         headerR.add(save);
-
+        
+        
         //profilepic
         JPanel picWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER));
         picWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
@@ -765,13 +829,26 @@ public class GUI {
         profilePic.setBorder(new javax.swing.border.LineBorder(Color.BLACK, 2));
         profilePic.setHorizontalAlignment(JLabel.CENTER);
         profilePic.setVerticalAlignment(JLabel.CENTER);
-        profilePic.setText("[Photo]");
+        
+        BufferedImage img = activeUser.getProfilePicture();
+        Image scaled = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        profilePic.setIcon(new ImageIcon(scaled));
+        
         profilePic.setForeground(Color.BLACK);
-
+        
         picWrapper.add(profilePic);
         profileEdit.add(picWrapper);
 
         JButton profileH = new JButton("Add Photo");
+        profileH.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	activeUser.chooseImage();
+            	
+            	BufferedImage img = activeUser.getProfilePicture();
+                Image scaled = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                profilePic.setIcon(new ImageIcon(scaled));
+            }
+        });
         profileH.setFont(headerFont);
         JPanel profileHWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
         profileHWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, profileH.getPreferredSize().height));
@@ -784,21 +861,18 @@ public class GUI {
         JLabel nameF = new JLabel("Name");
         nameF.setFont(titleFont);
         userPanel.add(nameF);
-        JTextField text1 = new JTextField();
         userPanel.add(text1);
+        
+        JLabel usNaF = new JLabel("Username");
+        usNaF.setFont(titleFont);
+        userPanel.add(usNaF);
+        userPanel.add(text2);
 
         JLabel pNoF = new JLabel("Phone No");
         pNoF.setFont(titleFont);
         userPanel.add(pNoF);
-        JTextField text2 = new JTextField();
-        userPanel.add(text2);
-
-        JLabel usNaF = new JLabel("Username");
-        usNaF.setFont(titleFont);
-        userPanel.add(usNaF);
-        JTextField text3 = new JTextField();
         userPanel.add(text3);
-
+        
         profileEdit.add(userPanel);
 
         revNrep(headerL);
@@ -848,7 +922,11 @@ public class GUI {
         profilePic.setBorder(new javax.swing.border.LineBorder(Color.BLACK, 2));
         profilePic.setHorizontalAlignment(JLabel.CENTER);
         profilePic.setVerticalAlignment(JLabel.CENTER);
-        profilePic.setText("[Photo]");
+        
+        BufferedImage img = activeUser.getProfilePicture();
+        Image scaled = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        profilePic.setIcon(new ImageIcon(scaled));
+        
         profilePic.setForeground(Color.BLACK);
 
         picWrapper.add(profilePic);
