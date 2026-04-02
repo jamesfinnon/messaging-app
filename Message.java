@@ -11,6 +11,7 @@ public class Message {
 	private String content;
 	private boolean read;
 	private Instant timeOfMessage;
+	private Contact sentBy;
 	
 	/**
 	 * formats the time inputed to hours:minutes:seconds
@@ -26,7 +27,7 @@ public class Message {
                         .withZone(ZoneId.systemDefault());
     	
     	return formatter.format(time);
-    }	
+    }
 	
 	// getters and setters for fields
 	public String getContent() {
@@ -46,6 +47,14 @@ public class Message {
 	}
 	public void setTimeOfMessage(Instant timeOfMessage) {
 		this.timeOfMessage = timeOfMessage;
+	}
+
+	public Contact getSentBy() {
+		return sentBy;
+	}
+
+	public void setSentBy(Contact sentBy) {
+		this.sentBy = sentBy;
 	}
 
 }
