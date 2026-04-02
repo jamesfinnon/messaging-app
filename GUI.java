@@ -179,11 +179,11 @@ public class GUI {
             history.pop();
     	}
     	else if (history.peek().equals("search")) {
-    		//searchP(headerL, headerR, footerP);
+    		searchP(headerL, headerR, footerP);
             history.pop();
     	}
     	else if (history.peek().equals("chatsN")) {
-    		//chatsN(headerL, headerR, footerP);
+    		chatsN(headerL, headerR, footerP);
             history.pop();
     	}
     	
@@ -213,6 +213,11 @@ public class GUI {
         
         //rhp
         JButton searchBut = new JButton("Search");
+        searchBut.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                searchP(headerL, headerR, footerP);
+            }
+        });
         JButton profileBut = new JButton("Profile");
         profileBut.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -237,7 +242,7 @@ public class GUI {
         JButton newChatBut = new JButton("+ New Chat");
         newChatBut.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                chatP(headerL, headerR, footerP);
+                chatsN(headerL, headerR, footerP);
             }
         });
         footerP.add(newChatBut, BorderLayout.CENTER);
@@ -278,11 +283,12 @@ public class GUI {
         footerP.add(sendBut, BorderLayout.EAST);
 
         JButton searchBut = new JButton("Search ⌕");
+        searchBut.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                searchP(headerL, headerR, footerP);
+            }
+        });
         headerR.add(searchBut);
-
-        JSeparator separ = new JSeparator(JSeparator.VERTICAL);
-        separ.setMaximumSize(new Dimension(2, Integer.MAX_VALUE));
-        chatView.add(separ);
 
         JButton conInfBut = new JButton(":");
         conInfBut.addActionListener(new ActionListener() {
@@ -424,6 +430,11 @@ public class GUI {
         headerL.add(header);
 
         JButton searchBut = new JButton("Search ⌕");
+        searchBut.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                searchP(headerL, headerR, footerP);
+            }
+        });
         headerR.add(searchBut);
 
         JButton newCon = new JButton("Add Contacts");
@@ -853,6 +864,113 @@ public class GUI {
         revNrep(contactsEdit);
 
         cardLayout.show(mainP, "contactsEdit");
+    }
+
+    public void chatsN(JPanel headerL, JPanel headerR, JPanel footerP) {
+        
+        Font titleFont = new Font("Arial", Font.BOLD, 14);
+        history.add("chatsN");
+
+        headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
+        footerP.setLayout(new BorderLayout());
+
+        newChats.removeAll();
+        headerL.removeAll();
+        headerR.removeAll();
+        footerP.removeAll();
+
+        JButton back = new JButton("← Back");
+        back.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	newChats.removeAll();
+                back(headerL, headerR, footerP);
+            }
+        });
+        headerL.add(back);
+        JLabel header = new JLabel("New Chat");
+        header.setFont(headerFont);
+        headerL.add(header);
+
+        JButton newCon = new JButton("Start Chat");
+        newCon.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                //where the search method will be called
+            }
+        });
+        footerP.add(newCon, BorderLayout.CENTER);
+
+        JPanel sortH = new JPanel(new GridLayout(2, 1, 0, 6));
+        JTextField alphaSort = new JTextField();
+        sortH.add(alphaSort);
+
+        JLabel direcInf = new JLabel("Select Contacts");
+        direcInf.setFont(titleFont);
+        sortH.add(direcInf);
+
+        newChats.add(sortH, BorderLayout.NORTH);
+
+        JPanel resCon = new JPanel(new GridLayout(20,1));
+        newChats.add(resCon);
+
+        revNrep(headerL);
+        revNrep(headerR);
+        revNrep(footerP);
+        revNrep(newChats);
+
+        cardLayout.show(mainP, "chatsN");
+    }
+
+    public void searchP(JPanel headerL, JPanel headerR, JPanel footerP) {
+
+        
+        
+        history.add("search");
+
+        headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
+        footerP.setLayout(new BorderLayout());
+
+        searchPage.removeAll();
+        headerL.removeAll();
+        headerR.removeAll();
+        footerP.removeAll();
+
+        JButton back = new JButton("← Back");
+        back.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	searchPage.removeAll();
+                back(headerL, headerR, footerP);
+            }
+        });
+        headerL.add(back);
+        JLabel header = new JLabel("Search");
+        header.setFont(headerFont);
+        headerL.add(header);
+
+        JButton newCon = new JButton("Search");
+        newCon.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                //where the search for contacts method will be called
+            }
+        });
+        footerP.add(newCon, BorderLayout.CENTER);
+
+        JPanel sortH = new JPanel(new BorderLayout());
+        JTextField alphaSort = new JTextField();
+
+        sortH.add(alphaSort, BorderLayout.CENTER);
+        newChats.add(sortH, BorderLayout.NORTH);
+
+        searchPage.add(sortH, BorderLayout.NORTH);
+
+        JPanel resCon = new JPanel(new GridLayout(20,1));
+        searchPage.add(resCon);
+
+        revNrep(headerL);
+        revNrep(headerR);
+        revNrep(footerP);
+        revNrep(searchPage);
+
+        cardLayout.show(mainP, "search");
     }
 
     public void revNrep(JPanel panel) {
