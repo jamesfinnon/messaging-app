@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 /**
@@ -38,7 +39,7 @@ public class Contact {
 		username = "johndoe123";
 		number = "+44 7123 456789";
 		id = UUID.randomUUID();
-		setImage("src/defaultUser.jpg");
+		setImage("defaultUser.jpg");
 		this.dateAdded = Instant.now();
 		
 	}
@@ -60,7 +61,7 @@ public class Contact {
 		setUsername(username);
 		setNumber(number);
 		id = UUID.randomUUID();
-		setImage("/defaultUser.jpg");
+		setImage("defaultUser.jpg");
 	}
 
 	/**
@@ -80,7 +81,7 @@ public class Contact {
 		setUsername(username);
 		setNumber(number);
 		id = UUID.randomUUID();
-		setImage("/defaultUser.jpg");
+		setImage("defaultUser.jpg");
 		this.dateAdded = Objects.requireNonNull(dateAdded, "Date added cannot be null");
 	}
 	
@@ -121,7 +122,7 @@ public class Contact {
         		
         
     }
-
+    
     /**
      * @author sameerkashaul
      * 
@@ -143,13 +144,39 @@ public class Contact {
 	public void setImage(String imagePath) {
 		try 
 		{
-			setProfilePicture(ImageIO.read(new File(imagePath)));
+			setProfilePicture(ImageIO.read(getClass().getResource(imagePath)));
 		} 
 		catch (IOException e) 
 		{
 		    e.printStackTrace();
 		}
 	}
+	
+	public void chooseImage() {
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setDialogTitle("Select Profile Picture");
+
+		// Optional: restrict to images only
+		fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+				"Image files", "jpg", "jpeg", "png", "gif"
+		));
+
+		int result = fileChooser.showOpenDialog(null);
+		
+		if (result == JFileChooser.APPROVE_OPTION) {
+		    File selectedFile = fileChooser.getSelectedFile();
+
+		    try {
+		        BufferedImage img = ImageIO.read(selectedFile);
+
+		        // store in model
+		        setProfilePicture(img);
+
+		    } catch (IOException ex) {
+		        ex.printStackTrace();
+		    }
+		}
+	 }
 	
 	// getters and setters
 	public String getName() {

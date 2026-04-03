@@ -4,14 +4,32 @@ import java.util.Comparator;
 
 public class User extends Contact {
     private ArrayList<Contact> contacts;
+    private boolean alphaSort;
     
     public User() {
-    	contacts = new ArrayList<Contact>();    	   	
+    	contacts = new ArrayList<Contact>();    
+    	alphaSort = false;
     }
     
 	public void addContact(Contact contact) {
 		contacts.add(contact);
 		
+		if (alphaSort) {
+			sortContactsAlphabetically();
+		}
+		else {
+			sortContactsRecent();
+		}
+		
+	}
+	
+	public void removeContact(Contact contact) {
+		for (int i = 0; i < getContactsSize(); i++) {
+			if (contact == contacts.get(i)) {
+				contacts.remove(i);
+				return;
+			}
+		}
 	}
 	
 	public void sortContactsAlphabetically() {
@@ -20,6 +38,7 @@ public class User extends Contact {
 	
 	public void sortContactsRecent() {
 		Collections.sort(contacts, Comparator.comparing(Contact::getDateAdded));
+		Collections.reverse(contacts);
 	}
 	
 	
@@ -35,7 +54,7 @@ public class User extends Contact {
 		ArrayList<Contact> matches = new ArrayList<Contact>();
 		
 		if (searchBy == 0) {
-			for (int i = 0; i < contacts.size(); i++) {
+			for (int i = 0; i < getContactsSize(); i++) {
 				contact = contacts.get(i);
 				
 				if (contacts.get(i).getName().toLowerCase().contains(searchWord.toLowerCase())) {
@@ -44,7 +63,7 @@ public class User extends Contact {
 			}
 		}
 		else if (searchBy == 1) {
-			for (int i = 0; i < contacts.size(); i++) {
+			for (int i = 0; i < getContactsSize(); i++) {
 				contact = contacts.get(i);
 				
 				if (contacts.get(i).getUsername().contains(searchWord)) {
@@ -72,5 +91,13 @@ public class User extends Contact {
 
 	public void setContacts(ArrayList<Contact> contacts) {
 		this.contacts = contacts;
+	}
+
+	public boolean isAlphaSort() {
+		return alphaSort;
+	}
+
+	public void setAlphaSort(boolean alphaSort) {
+		this.alphaSort = alphaSort;
 	}
 }
