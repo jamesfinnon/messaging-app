@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Stack;
@@ -189,7 +190,14 @@ public class GUI {
     		chatsN(headerL, headerR, footerP);
             history.pop();
     	}
-    	
+    	else if (history.peek().equals("chat")) {    		
+    		chatP(headerL, headerR, footerP, activeUser.getCurrentChat());
+            history.pop();
+    	}
+    	else if (history.peek().equals("contactsD")) {		
+    		contactsD(headerL, headerR, footerP, activeUser.getTempContact());
+            history.pop();
+    	}
     	
     }
     
@@ -205,10 +213,7 @@ public class GUI {
     		contactsE(headerL, headerR, footerP, contact);
             history.pop();
     	}
-        else if (history.peek().equals("chat")) {    		
-    		chatP(headerL, headerR, footerP, activeUser.getCurrentChat());
-            history.pop();
-    	}
+        
     	
     }
     
@@ -277,6 +282,8 @@ public class GUI {
     public void chatP(JPanel headerL, JPanel headerR, JPanel footerP, Chat chat) {
         
         history.add("chat");
+        
+        int maxWidth = (int)(chatView.getWidth() * 0.6);
 
         headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
         footerP.setLayout(new BorderLayout());
@@ -300,8 +307,28 @@ public class GUI {
         JTextField messageB = new JTextField();
         footerP.add(messageB, BorderLayout.CENTER);
         
-        
         JButton sendBut = new JButton("Send =>");
+        sendBut.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	String text = messageB.getText().trim();
+                if (text.isEmpty()) return;
+
+                Message msg = new Message();
+                msg.setContent(text);
+                msg.setSentBy(activeUser); // assuming activeUser is a Contact
+                msg.setTimeOfMessage(Instant.now());
+                msg.setRead(true);
+
+                chat.getMessages().add(msg);
+
+                messageB.setText("");
+
+                // Refresh chat panel
+                chatView.removeAll();;
+                history.pop();
+                chatP(headerL, headerR, footerP, chat);
+            }
+        });
         footerP.add(sendBut, BorderLayout.EAST);
 
         JButton searchBut = new JButton("Search ⌕");
@@ -319,6 +346,98 @@ public class GUI {
             }
         });
         headerR.add(conInfBut);
+        
+        JPanel messagesPanel = new JPanel();
+        messagesPanel.setLayout(new BoxLayout(messagesPanel, BoxLayout.Y_AXIS));
+        messagesPanel.add(Box.createVerticalGlue());
+
+        JScrollPane scrollPane = new JScrollPane(messagesPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        chatView.setLayout(new BorderLayout());
+        chatView.add(scrollPane, BorderLayout.CENTER);
+
+        
+        for (Message msg : chat.getMessages()) {
+
+            boolean isMe = msg.getSentBy().equals(activeUser);
+
+            
+
+            // Message container (vertical stack)
+            JPanel messageBox = new JPanel();
+            messageBox.setLayout(new BoxLayout(messageBox, BoxLayout.Y_AXIS));
+            messageBox.setOpaque(false);
+            messageBox.setMaximumSize(new Dimension(maxWidth, Short.MAX_VALUE));
+            
+            // Wrapper (left/right alignment)
+            JPanel wrapper = new JPanel();
+            wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.X_AXIS));
+
+            if (isMe) {
+                wrapper.add(Box.createHorizontalGlue());
+                wrapper.add(messageBox);
+            } else {
+                wrapper.add(messageBox);
+                wrapper.add(Box.createHorizontalGlue());
+            }
+            wrapper.setOpaque(false);
+
+            // 👤 Sender label (top)
+            JLabel senderLabel = new JLabel(msg.getSentBy().getName());
+            senderLabel.setFont(new Font("Arial", Font.PLAIN, 11));
+            senderLabel.setForeground(Color.GRAY);
+            senderLabel.setAlignmentX(isMe ? Component.RIGHT_ALIGNMENT : Component.LEFT_ALIGNMENT);
+
+            // 💬 Bubble
+            JPanel bubble = new JPanel(new BorderLayout());
+            bubble.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
+            if (isMe) {
+            	bubble.setBackground(Color.green);
+            }
+            else {
+            	bubble.setBackground(Color.gray);
+            }
+            //bubble.setMaximumSize(new Dimension(maxWidth, Short.MAX_VALUE));  
+
+            JTextArea msgArea = new JTextArea(msg.getContent());
+            msgArea.setLineWrap(true);
+            msgArea.setWrapStyleWord(true);
+            msgArea.setEditable(false);
+            msgArea.setOpaque(false);
+            msgArea.setBorder(null);
+            msgArea.setFont(new Font("Arial", Font.PLAIN, 13));
+
+            // Critical: constrain width
+            //msgArea.setMaximumSize(new Dimension(maxWidth, Short.MAX_VALUE));
+
+            bubble.add(msgArea, BorderLayout.CENTER);
+
+            // ⏱ Time label (bottom)
+            String time = msg.formatTime(msg.getTimeOfMessage());
+            JLabel timeLabel = new JLabel(time);
+            timeLabel.setFont(new Font("Arial", Font.PLAIN, 10));
+            timeLabel.setForeground(Color.GRAY);
+            timeLabel.setAlignmentX(isMe ? Component.RIGHT_ALIGNMENT : Component.LEFT_ALIGNMENT);
+
+            // Assemble
+            messageBox.add(senderLabel);
+            messageBox.add(Box.createVerticalStrut(2));
+            messageBox.add(bubble);
+            messageBox.add(Box.createVerticalStrut(2));
+            messageBox.add(timeLabel);
+   
+            messagesPanel.add(wrapper);
+
+            msg.setRead(true);
+        }
+
+        
+        SwingUtilities.invokeLater(() -> {
+            JScrollBar vertical = scrollPane.getVerticalScrollBar();
+            vertical.setValue(vertical.getMaximum());
+        });
 
         revNrep(headerL);
         revNrep(headerR);
@@ -644,6 +763,8 @@ public class GUI {
         gbc.insets = new Insets(2, 2, 2, 2);
         message.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	
+            	activeUser.setTempContact(contact);
             	
             	boolean found = false;
             	

@@ -27,14 +27,13 @@ public class Contact {
 	private BufferedImage profilePicture;
 	private Instant dateAdded;
 	
-	private ArrayList<Chat> chats;
-	
 	/**
 	 * default constructor
 	 * 
 	 * @author jamesfinnon
 	 */
 	public Contact() {
+		
 		name = "John Doe";
 		username = "johndoe123";
 		number = "+44 7123 456789";
@@ -57,6 +56,7 @@ public class Contact {
 	 * @param profilePicture the path to the contact's profile picture
 	 */
 	public Contact(String name, String username, String number, String profilePicturePath) {
+		
 		setName(name);
 		setUsername(username);
 		setNumber(number);
@@ -77,6 +77,7 @@ public class Contact {
 	 * @param dateAdded the instant when this contact was added
 	 */
 	public Contact(String name, String username, String number, String profilePicturePath, Instant dateAdded) {
+		
 		setName(name);
 		setUsername(username);
 		setNumber(number);
@@ -199,10 +200,6 @@ public class Contact {
 		return dateAdded;
 	}
 	
-	public ArrayList<Chat> getChats() {
-		return chats;
-	}
-
 	public String getUsername() {
 		return username;
 	}
@@ -222,10 +219,7 @@ public class Contact {
 	public void setDateAdded(Instant dateAdded) {
 		this.dateAdded = dateAdded;
 	}
-	
-	public void setChats(ArrayList<Chat> chats) {
-		this.chats = chats;
-	}
+
 	
 	public void setUsername(String username) {
 		this.username = username;
