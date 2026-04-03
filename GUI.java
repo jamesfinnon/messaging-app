@@ -20,10 +20,15 @@ public class GUI {
     String message1 = new String("hello");
     String message2 = new String("goodbye");
     
-    ArrayList<User> users = new ArrayList<User>();
     User activeUser;
-    		
+    User secondUser;
     
+    private void swapUsers () {
+    	User tempUser = activeUser;
+    	activeUser = secondUser;
+    	secondUser = tempUser;
+    }
+    		    
     Stack<String> history = new Stack<String>();
     
     private JFrame window;
@@ -56,10 +61,11 @@ public class GUI {
     
     public void mainFrame() {
     	
-    	User newUser = new User();
-    	activeUser = newUser;
-    	
-    	addUser(newUser);
+    	activeUser = new User();
+    	secondUser = new User();
+
+    	activeUser.addContact(secondUser);
+    	secondUser.addContact(activeUser);
     	
         window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -144,10 +150,6 @@ public class GUI {
 
         window.setVisible(true);
         
-    }
-    
-    public void addUser(User user) {
-    	users.add(user);
     }
     
     /**
@@ -318,9 +320,25 @@ public class GUI {
                 msg.setSentBy(activeUser); // assuming activeUser is a Contact
                 msg.setTimeOfMessage(Instant.now());
                 msg.setRead(true);
-
+                
                 chat.getMessages().add(msg);
-
+                         
+                for (int i = 0; i < activeUser.getContactsSize(); i++) {               	
+                	if (chat.getChatMembers().contains(activeUser.getContacts().get(i))) { 
+                		if (activeUser.getContacts().get(i).equals(activeUser)) {
+                			continue;
+                		}
+                		for (int j = 0; j < activeUser.getContacts().get(i).getChatsSize(); j++) {
+                			if (activeUser.getContacts().get(i).getChats().get(j).equals(chat)) {
+                				activeUser.getContacts().get(i).getChats().set(j, chat);
+                			}
+                		}
+                		
+                	}
+                }
+                
+                
+                
                 messageB.setText("");
 
                 // Refresh chat panel
@@ -378,9 +396,11 @@ public class GUI {
             if (isMe) {
                 wrapper.add(Box.createHorizontalGlue());
                 wrapper.add(messageBox);
+                System.out.println("itsmeeeeeee");
             } else {
                 wrapper.add(messageBox);
                 wrapper.add(Box.createHorizontalGlue());
+                System.out.println("itsNotmeeee");
             }
             wrapper.setOpaque(false);
 
@@ -388,9 +408,14 @@ public class GUI {
             JLabel senderLabel = new JLabel(msg.getSentBy().getName());
             senderLabel.setFont(new Font("Arial", Font.PLAIN, 11));
             senderLabel.setForeground(Color.GRAY);
-            senderLabel.setAlignmentX(isMe ? Component.RIGHT_ALIGNMENT : Component.LEFT_ALIGNMENT);
+            if (isMe) {
+            	senderLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+            }
+            else {
+            	senderLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            }
 
-            // 💬 Bubble
+            
             JPanel bubble = new JPanel(new BorderLayout());
             bubble.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
             if (isMe) {
@@ -399,7 +424,8 @@ public class GUI {
             else {
             	bubble.setBackground(Color.gray);
             }
-            //bubble.setMaximumSize(new Dimension(maxWidth, Short.MAX_VALUE));  
+            
+            bubble.setMaximumSize(new Dimension(maxWidth, Short.MAX_VALUE));  
 
             JTextArea msgArea = new JTextArea(msg.getContent());
             msgArea.setLineWrap(true);
@@ -419,7 +445,12 @@ public class GUI {
             JLabel timeLabel = new JLabel(time);
             timeLabel.setFont(new Font("Arial", Font.PLAIN, 10));
             timeLabel.setForeground(Color.GRAY);
-            timeLabel.setAlignmentX(isMe ? Component.RIGHT_ALIGNMENT : Component.LEFT_ALIGNMENT);
+            if (isMe) {
+            	timeLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+            }
+            else {
+            	timeLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            }
 
             // Assemble
             messageBox.add(senderLabel);
@@ -471,7 +502,19 @@ public class GUI {
         JLabel myProfile = new JLabel("My Profile");
         myProfile.setFont(headerFont);
         headerL.add(myProfile);
-
+        
+        JButton swap = new JButton("Switch Accounts");
+        swap.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	
+            	swapUsers();
+            	
+            	profilePage.removeAll();
+                back(headerL, headerR, footerP);
+            }
+        });
+        headerR.add(swap);
+        
         //profilepic
         JPanel picWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER));
         picWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
@@ -769,7 +812,7 @@ public class GUI {
             	boolean found = false;
             	
             	for (int i = 0; i < activeUser.getChatsSize(); i++) {
-            		if (activeUser.getChats().get(i).getChatMembers().contains(contact) && activeUser.getChats().get(i).getChatMembers().size() == 1) {
+            		if (activeUser.getChats().get(i).getChatMembers().contains(contact) && activeUser.getChats().get(i).getChatMembers().size() == 2) {
             			activeUser.setCurrentChat(activeUser.getChats().get(i));
             			found = true;
             			break;
@@ -778,9 +821,13 @@ public class GUI {
             		
             	if (!found) {         	
             		Chat newChat = new Chat();
+            		newChat.addMember(activeUser);
             		newChat.addMember(contact);
             		activeUser.addChat(newChat);
+            		contact.addChat(newChat);
+            		
             		activeUser.setCurrentChat(newChat);
+            		contact.setCurrentChat(newChat);
             	}
             	
             	chatP(headerL, headerR, footerP, activeUser.getCurrentChat());
@@ -1245,14 +1292,18 @@ public class GUI {
                 	JOptionPane.showMessageDialog(null, "No contacts selected.");
                 	return;
                 }
-                	
+                
+                newChat.addMember(activeUser);
+                
                 for (int i = 0; i < activeUser.getChatsSize(); i++) {
                 	if (activeUser.getChats().get(i).getChatMembers().equals(newChat.getChatMembers())) {
                 		JOptionPane.showMessageDialog(null, "Chat already exists.");
                         return;
                 	}
                 }
-                	
+                
+                
+                
                 activeUser.addChat(newChat);
                 activeUser.setCurrentChat(newChat);
                 	  	
