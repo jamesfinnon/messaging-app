@@ -163,24 +163,12 @@ public class GUI {
     		landingPage(headerL, headerR, footerP);
             history.pop();
     	}
-    	else if (history.peek().equals("chat")) {    		
-    		chatP(headerL, headerR, footerP);
-            history.pop();
-    	}
     	else if (history.peek().equals("profile")) {	
     		profileP(headerL, headerR, footerP);
             history.pop();
     	}
     	else if (history.peek().equals("contactsP")) {   		
     		contactsP(headerL, headerR, footerP);
-            history.pop();
-    	}
-    	else if (history.peek().equals("contactsD")) {		
-    		//contactsD(headerL, headerR, footerP);
-            history.pop();
-    	}
-        else if (history.peek().equals("contactsEdit")) {	
-    		contactsE(headerL, headerR, footerP);
             history.pop();
     	}
     	else if (history.peek().equals("contactsN")) {  
@@ -200,6 +188,25 @@ public class GUI {
             history.pop();
     	}
     	
+    	
+    }
+    
+    public void back (JPanel headerL, JPanel headerR, JPanel footerP, Contact contact) {
+    	
+    	history.pop();
+
+    	if (history.peek().equals("contactsD")) {		
+    		contactsD(headerL, headerR, footerP, contact);
+            history.pop();
+    	}
+        else if (history.peek().equals("contactsEdit")) {	
+    		contactsE(headerL, headerR, footerP, contact);
+            history.pop();
+    	}
+        else if (history.peek().equals("chat")) {    		
+    		chatP(headerL, headerR, footerP, contact);
+            history.pop();
+    	}
     	
     }
     
@@ -265,7 +272,7 @@ public class GUI {
         revNrep(footerP);
     }
 
-    public void chatP(JPanel headerL, JPanel headerR, JPanel footerP) {
+    public void chatP(JPanel headerL, JPanel headerR, JPanel footerP, Contact contact) {
         
         history.add("chat");
 
@@ -281,10 +288,10 @@ public class GUI {
         back.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	chatView.removeAll();
-                back(headerL, headerR, footerP);
+                back(headerL, headerR, footerP, contact);
             }
         });
-        JLabel chatName = new JLabel(friend);
+        JLabel chatName = new JLabel(contact.getName());
         chatName.setFont(headerFont);
         headerL.add(chatName);
 
@@ -455,29 +462,39 @@ public class GUI {
         newCon.addActionListener(e -> contactsN(headerL, headerR, footerP));
         footerP.add(newCon, BorderLayout.CENTER);
 
-        // Sorting buttons
+        
         JPanel sortH = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 0));
         JButton alphaSort = new JButton("Alphabetical");
+        alphaSort.addActionListener(e -> {
+            activeUser.sortContactsAlphabetically();
+            history.pop();
+            contactsP(headerL, headerR, footerP);
+        });
+        
         JButton chronSort = new JButton("Recent");
+        chronSort.addActionListener(e -> {
+            activeUser.sortContactsRecent();
+            history.pop();
+            contactsP(headerL, headerR, footerP);
+        });
 
         sortH.add(alphaSort);
         sortH.add(chronSort);
         contactsPage.add(sortH, BorderLayout.NORTH);
-
-        // Contacts container
+       
         JPanel resCon = new JPanel();
-        resCon.setLayout(new BoxLayout(resCon, BoxLayout.Y_AXIS)); // better than GridLayout
+        resCon.setLayout(new BoxLayout(resCon, BoxLayout.Y_AXIS));
 
         JScrollPane scroll = new JScrollPane(resCon);
-
-        // Populate contacts
+      
         for (int i = 0; i < activeUser.getContactsSize(); i++) {
 
-            var contactObj = activeUser.getContacts().get(i); // ✅ fix capture
+            var contactObj = activeUser.getContacts().get(i); 
 
             JButton contactBtn = new JButton(contactObj.getName());
 
             contactBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+            contactBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
             contactBtn.addActionListener(e -> {
                 contactsD(headerL, headerR, footerP, contactObj);
@@ -499,7 +516,7 @@ public class GUI {
 
     public void contactsD(JPanel headerL, JPanel headerR, JPanel footerP, Contact contact) {
 
-        history.add("contactD");
+        history.add("contactsD");
 
         Font titleFont = new Font("Arial", Font.BOLD, 14);
 
@@ -535,7 +552,7 @@ public class GUI {
         profilePic.setHorizontalAlignment(JLabel.CENTER);
         profilePic.setVerticalAlignment(JLabel.CENTER);
         
-        BufferedImage img = activeUser.getProfilePicture();
+        BufferedImage img = contact.getProfilePicture();
         Image scaled = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
         profilePic.setIcon(new ImageIcon(scaled));
         
@@ -544,14 +561,14 @@ public class GUI {
         picWrapper.add(profilePic);
         contactsDet.add(picWrapper);
 
-        JLabel profileH = new JLabel(profileName);
+        JLabel profileH = new JLabel(contact.getName());
         profileH.setFont(headerFont);
         JPanel profileHWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
         profileHWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, profileH.getPreferredSize().height));
         profileHWrapper.add(profileH);
         contactsDet.add(profileHWrapper);
 
-        JLabel profNo = new JLabel(phoneNo);
+        JLabel profNo = new JLabel(contact.getNumber());
         profNo.setAlignmentX(Component.CENTER_ALIGNMENT);
         contactsDet.add(profNo);
 
@@ -618,7 +635,7 @@ public class GUI {
         gbc.insets = new Insets(2, 2, 2, 2);
         message.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                chatP(headerL, headerR, footerP);
+                chatP(headerL, headerR, footerP, contact);
             }
         });
         footerP.add(message, gbc);
@@ -631,12 +648,26 @@ public class GUI {
         gbc.weighty = 0.5;
         edit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                contactsE(headerL, headerR, footerP);
+                contactsE(headerL, headerR, footerP, contact);
             }
         });
         footerP.add(edit, gbc);
 
         JButton delete = new JButton("Delete");
+        delete.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	
+            	if (0 == JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this contact?")) {
+            		activeUser.removeContact(contact);
+                    back(headerL, headerR, footerP);
+            	}
+            	else {
+            		return;
+            	}
+            	
+                
+            }
+        });
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
@@ -901,9 +932,10 @@ public class GUI {
         cardLayout.show(mainP, "Eprofile");
     }
 
-    public void contactsE(JPanel headerL, JPanel headerR, JPanel footerP) {
+    public void contactsE(JPanel headerL, JPanel headerR, JPanel footerP, Contact contact) {
 
         history.add("contactsEdit");
+        Contact tempContact = new Contact();
 
         Font titleFont = new Font("Arial", Font.BOLD, 14);
 
@@ -918,8 +950,14 @@ public class GUI {
         JButton back = new JButton("← Back");
         back.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	contactsEdit.removeAll();
-                back(headerL, headerR, footerP);
+            	if (0 == JOptionPane.showConfirmDialog(null, "Are you sure you want to discard all changes?")) {
+            		contactsEdit.removeAll();
+                    back(headerL, headerR, footerP, contact);
+            	}
+            	else {
+            		return;
+            	}
+            
             }
         });
         
@@ -927,8 +965,28 @@ public class GUI {
         JLabel myProfile = new JLabel("Edit Contact");
         myProfile.setFont(headerFont);
         headerL.add(myProfile);
+        
+        JTextField text1 = new JTextField();
+        text1.setText(contact.getName());
+        
+        JTextField text2 = new JTextField();
+        text2.setText(contact.getUsername());
+        
+        JTextField text3 = new JTextField();
+        text3.setText(contact.getNumber());
 
         JButton save = new JButton("Save");
+        save.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	contact.setProfilePicture(tempContact.getProfilePicture());
+            	contact.setName(text1.getText());
+            	contact.setUsername(text2.getText());
+            	contact.setNumber(text3.getText());
+        
+                contactsEdit.removeAll();
+                back(headerL, headerR, footerP, contact);
+            }
+        });
         headerR.add(save);
 
         //profilepic
@@ -941,7 +999,7 @@ public class GUI {
         profilePic.setHorizontalAlignment(JLabel.CENTER);
         profilePic.setVerticalAlignment(JLabel.CENTER);
         
-        BufferedImage img = activeUser.getProfilePicture();
+        BufferedImage img = contact.getProfilePicture();
         Image scaled = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
         profilePic.setIcon(new ImageIcon(scaled));
         
@@ -951,6 +1009,16 @@ public class GUI {
         contactsEdit.add(picWrapper);
 
         JButton profileH = new JButton("Add Photo");
+        profileH.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	tempContact.chooseImage();
+            	
+            	BufferedImage img = tempContact.getProfilePicture();
+                Image scaled = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                profilePic.setIcon(new ImageIcon(scaled));
+            }
+        });
+        
         profileH.setFont(headerFont);
         JPanel profileHWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
         profileHWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, profileH.getPreferredSize().height));
@@ -963,20 +1031,22 @@ public class GUI {
         JLabel nameF = new JLabel("Name");
         nameF.setFont(titleFont);
         userPanel.add(nameF);
-        JTextField text1 = new JTextField();
+        
         userPanel.add(text1);
+        
+        JLabel usNaF = new JLabel("Username");
+        usNaF.setFont(titleFont);
+        userPanel.add(usNaF);
+        
+        userPanel.add(text2);
 
         JLabel pNoF = new JLabel("Phone No");
         pNoF.setFont(titleFont);
         userPanel.add(pNoF);
-        JTextField text2 = new JTextField();
-        userPanel.add(text2);
-
-        JLabel usNaF = new JLabel("Username");
-        usNaF.setFont(titleFont);
-        userPanel.add(usNaF);
-        JTextField text3 = new JTextField();
+      
         userPanel.add(text3);
+
+        
 
         contactsEdit.add(userPanel);
 
