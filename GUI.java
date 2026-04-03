@@ -4,7 +4,10 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Stack;
 import java.util.Set;
 
@@ -12,6 +15,7 @@ public class GUI {
 	
     //test variables
     Font headerFont = new Font("Arial", Font.BOLD, 18);
+    
     String friend = new String("James Finnon");
     String profileName = new String("Faisal Yero");
     String userName = new String("faisalyero123");
@@ -266,7 +270,32 @@ public class GUI {
         //mp
         landingP.removeAll();
         landingP.setLayout(new BorderLayout());
+        
+        JPanel chatListPanel = new JPanel();
+        chatListPanel.setLayout(new BoxLayout(chatListPanel, BoxLayout.Y_AXIS));
 
+        // Sort chats by most recent message
+        ArrayList<Chat> sortedChats = new ArrayList<Chat>();
+        sortedChats = activeUser.getChats();
+        
+
+        for (Chat chat : activeUser.getChats()) {
+            
+            
+            JLabel chatLabel = new JLabel(
+                String.format("%s: %s %s",
+                    sender,
+                    lastMsg.getContent(),
+                    chat.getMessages().getFirst().getSentBy().equals(activeUser) ? (chat.getMessages().getFirst().isRead() ? "(Read)" : "(Unread)") : "")
+            );
+            chatLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            chatListPanel.add(chatLabel);
+            chatListPanel.add(Box.createVerticalStrut(5));
+        }
+
+        JScrollPane scrollPane = new JScrollPane(chatListPanel);
+        landingP.add(scrollPane, BorderLayout.CENTER);
+        
         //fp
         JButton newChatBut = new JButton("+ New Chat");
         newChatBut.addActionListener(new ActionListener() {
@@ -344,6 +373,7 @@ public class GUI {
                 // Refresh chat panel
                 chatView.removeAll();;
                 history.pop();
+                chat.updateLastChanged();
                 chatP(headerL, headerR, footerP, chat);
             }
         });
@@ -356,11 +386,49 @@ public class GUI {
             }
         });
         headerR.add(searchBut);
+        
+        // Create the popup menu
+        JPopupMenu menu = new JPopupMenu();
 
+        // Add "Delete Chat" menu item
+        JMenuItem deleteChatItem = new JMenuItem("Delete Chat");
+        deleteChatItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int confirm = JOptionPane.showConfirmDialog(
+                    chatView,
+                    "Are you sure you want to delete this chat?",
+                    "Confirm Delete",
+                    JOptionPane.YES_NO_OPTION
+                );
+                if (confirm == JOptionPane.YES_OPTION) {
+                	
+                	for (int i = 0; i < activeUser.getContactsSize(); i++) {               	
+                    	if (chat.getChatMembers().contains(activeUser.getContacts().get(i))) { 
+                    		if (activeUser.getContacts().get(i).equals(activeUser)) {
+                    			continue;
+                    		}
+                    		for (int j = 0; j < activeUser.getContacts().get(i).getChatsSize(); j++) {
+                    			if (activeUser.getContacts().get(i).getChats().get(j).equals(chat)) {
+                    				activeUser.getContacts().get(i).getChats().remove(chat);
+                    			}
+                    		}
+                    		
+                    	}
+                    }
+                	
+                    activeUser.getChats().remove(chat); // remove chat from user
+                    chatView.removeAll(); // clear chat view
+                    back(headerL, headerR, footerP); // go back to previous panel
+                }
+            }
+        });
+        menu.add(deleteChatItem);
+        
         JButton conInfBut = new JButton(":");
         conInfBut.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-      //          contactsD(headerL, headerR, footerP);
+            	menu.show(conInfBut, conInfBut.getWidth()/2, conInfBut.getHeight()/2);
             }
         });
         headerR.add(conInfBut);
@@ -381,7 +449,78 @@ public class GUI {
 
             boolean isMe = msg.getSentBy().equals(activeUser);
 
+            JPopupMenu messageMenu = new JPopupMenu();
+
+            JMenuItem deleteItem = new JMenuItem("Delete");
+            deleteItem.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+
+                	chat.getMessages().remove(msg);
+                	
+                	chatView.removeAll();;
+                    history.pop();
+                    chatP(headerL, headerR, footerP, chat);
+                }
+            });
+            JMenuItem editItem = new JMenuItem("Edit");
+            editItem.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                	String newText = JOptionPane.showInputDialog(chatView, "Edit message:", msg.getContent());
+                        if (newText == null) {
+                        	return;
+                        }
+ 
+                        msg.setContent(newText);
+                        
+                        chatView.removeAll();
+                        history.pop();
+                        chatP(headerL, headerR, footerP, chat);
+                }
+            });
             
+            String[] emojis = {"👍", "❤️", "😂"};
+            JMenu reactMenu = new JMenu("React");
+            for (String emoji : emojis) {
+                JMenuItem emojiItem = new JMenuItem(emoji);
+                emojiItem.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                    	
+                        msg.addReaction(emoji, activeUser);
+
+                        chatView.removeAll();
+                        history.pop();
+                        chatP(headerL, headerR, footerP, chat);
+                    }
+                });
+                reactMenu.add(emojiItem);
+            }
+            
+            if (isMe) {
+            	messageMenu.add(editItem);
+            	messageMenu.add(deleteItem);
+            }
+            messageMenu.addSeparator();
+            messageMenu.add(reactMenu);
+            
+            MouseAdapter rightClickListener = new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    if (e.isPopupTrigger()) {
+                        showMenu(e);
+                    }
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    if (e.isPopupTrigger()) {
+                        showMenu(e);
+                    }
+                }
+
+                private void showMenu(MouseEvent e) {
+                    messageMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            };
 
             // Message container (vertical stack)
             JPanel messageBox = new JPanel();
@@ -437,7 +576,9 @@ public class GUI {
 
             // Critical: constrain width
             //msgArea.setMaximumSize(new Dimension(maxWidth, Short.MAX_VALUE));
-
+            
+            msgArea.addMouseListener(rightClickListener);
+            bubble.addMouseListener(rightClickListener);
             bubble.add(msgArea, BorderLayout.CENTER);
 
             // ⏱ Time label (bottom)
@@ -457,6 +598,51 @@ public class GUI {
             messageBox.add(Box.createVerticalStrut(2));
             messageBox.add(bubble);
             messageBox.add(Box.createVerticalStrut(2));
+            
+            System.out.println("Reactions: " + msg.getReactions().size());
+            if (!msg.getReactions().isEmpty()) {
+
+                JPanel reactionsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+                reactionsPanel.setOpaque(false);
+
+                for (Map.Entry<String, Set<Contact>> entry : msg.getReactions().entrySet()) {
+                    String emoji = entry.getKey();
+                    int count = entry.getValue().size();
+
+                    boolean reactedByMe = entry.getValue().contains(activeUser);
+
+                    JButton reactionBtn = new JButton(emoji + " " + count);
+                    reactionBtn.setMargin(new Insets(2, 6, 2, 6));
+                    reactionBtn.setFocusable(false);
+
+                    // Highlight if current user reacted
+                    if (reactedByMe) {
+                        reactionBtn.setBackground(Color.YELLOW);
+                    } else {
+                        reactionBtn.setBackground(Color.LIGHT_GRAY);
+                    }
+
+                    reactionBtn.addActionListener(e -> {
+                        msg.addReaction(emoji, activeUser);
+
+                        chatView.removeAll();
+                        history.pop();
+                        chatP(headerL, headerR, footerP, chat);
+                    });
+
+                    reactionsPanel.add(reactionBtn);
+                }
+
+                // Align properly
+                if (isMe) {
+                    reactionsPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+                } else {
+                    reactionsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+                }
+
+                messageBox.add(Box.createVerticalStrut(3));
+                messageBox.add(reactionsPanel);
+            }
             messageBox.add(timeLabel);
    
             messagesPanel.add(wrapper);
@@ -584,7 +770,7 @@ public class GUI {
         editPPanel.add(editProfile);
         profilePage.add(editPPanel);
         
-
+        
         revNrep(headerL);
         revNrep(headerR);
         revNrep(footerP);
@@ -853,13 +1039,14 @@ public class GUI {
         JButton delete = new JButton("Delete");
         delete.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	int confirm = JOptionPane.showConfirmDialog(null,"Are you sure you want to delete this contact?","Confirm Delete",JOptionPane.YES_NO_OPTION);
+                    if (confirm == JOptionPane.YES_OPTION) {
             	
-            	if (0 == JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this contact?")) {
-            		activeUser.removeContact(contact);
-                    back(headerL, headerR, footerP);
+                    	activeUser.removeContact(contact);
+                    	back(headerL, headerR, footerP);
             	}
-            	else {
-            		return;
+                    else {
+                    	return;
             	}
             	
                 

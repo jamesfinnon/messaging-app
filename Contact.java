@@ -3,6 +3,8 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -27,6 +29,8 @@ public class Contact {
 	private BufferedImage profilePicture;
 	private Instant dateAdded;
 	
+	private ArrayList<Chat> chats;
+    private Chat currentChat;
 	/**
 	 * default constructor
 	 * 
@@ -41,6 +45,8 @@ public class Contact {
 		setImage("defaultUser.jpg");
 		this.dateAdded = Instant.now();
 		
+		chats = new ArrayList<Chat>();
+    	currentChat = new Chat();
 	}
 	
 	/**
@@ -84,6 +90,10 @@ public class Contact {
 		id = UUID.randomUUID();
 		setImage("defaultUser.jpg");
 		this.dateAdded = Objects.requireNonNull(dateAdded, "Date added cannot be null");
+	}
+	
+	public void addChat(Chat chat) {
+		chats.add(chat);
 	}
 	
     /**
@@ -136,7 +146,12 @@ public class Contact {
         	JOptionPane.showMessageDialog(null, fieldName + " cannot be blank");
         return value.trim();
     }
-
+    
+    public void updateOrder() {
+    	Collections.sort(chats, Comparator.comparing(Chat::getLastChanged));
+    }
+    
+    
 	/**
 	 * @author jamesfinnon
 	 * 
@@ -178,6 +193,16 @@ public class Contact {
 		    }
 		}
 	 }
+	
+	public int getChatsSize() {
+		if (chats == null) {
+			return 0;
+		}
+		else {
+			return chats.size();
+		}
+		
+	}
 	
 	// getters and setters
 	public String getName() {
@@ -223,5 +248,21 @@ public class Contact {
 	
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	
+	public Chat getCurrentChat() {
+		return currentChat;
+	}
+
+	public void setCurrentChat(Chat currentChat) {
+		this.currentChat = currentChat;
+	}
+	
+	public ArrayList<Chat> getChats() {
+		return chats;
+	}
+	
+	public void setChats(ArrayList<Chat> chats) {
+		this.chats = chats;
 	}
 }

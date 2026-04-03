@@ -1,6 +1,11 @@
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * class for individual messages within a chat
@@ -8,10 +13,32 @@ import java.time.format.DateTimeFormatter;
  * @author jamesfinnon
  */
 public class Message {
-	private String content;
-	private boolean read;
-	private Instant timeOfMessage;
-	private Contact sentBy;
+    private String content;
+    private boolean read;
+    private Instant timeOfMessage;
+    private Contact sentBy;
+
+    private Map<String, Set<Contact>> reactions = new HashMap<>();
+
+    // Add or toggle reaction
+    public void addReaction(String emoji, Contact user) {
+        reactions.putIfAbsent(emoji, new HashSet<>());
+        
+        Set<Contact> users = reactions.get(emoji);
+
+        if (users.contains(user)) {
+            users.remove(user); // toggle off
+            if (users.isEmpty()) {
+                reactions.remove(emoji);
+            }
+        } else {
+            users.add(user);
+        }
+    }
+
+    public int getReactionCount(String emoji) {
+        return reactions.getOrDefault(emoji, Collections.emptySet()).size();
+    }
 	
 	/**
 	 * formats the time inputed to hours:minutes:seconds
@@ -55,6 +82,14 @@ public class Message {
 
 	public void setSentBy(Contact sentBy) {
 		this.sentBy = sentBy;
+	}
+
+	public Map<String, Set<Contact>> getReactions() {
+		return reactions;
+	}
+
+	public void setReactions(Map<String, Set<Contact>> reactions) {
+		this.reactions = reactions;
 	}
 
 }

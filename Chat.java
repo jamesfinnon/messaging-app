@@ -1,3 +1,4 @@
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -6,6 +7,7 @@ import java.util.Set;
 public class Chat {
     private LinkedList<Message> messages;
     private String chatName;
+    private Instant lastChanged;
     
     // set as can be unordered
     private Set<Contact> chatMembers;
@@ -15,7 +17,27 @@ public class Chat {
     	chatMembers = new HashSet<Contact>();
     	chatName = "";
     }
-
+    
+    public int getChatMembersSize() {
+		if (chatMembers == null) {
+			return 0;
+		}
+		else {
+			return chatMembers.size();
+		}
+		
+	}
+    
+    public int getMessagesSize() {
+		if (messages == null) {
+			return 0;
+		}
+		else {
+			return messages.size();
+		}
+		
+	}
+    
 	public LinkedList<Message> getMessages() {
 		return messages;
 	}
@@ -25,7 +47,7 @@ public class Chat {
 		Message message = new Message();
 		ArrayList<Message> matches = new ArrayList<Message>();
 		
-		for (int i = 0; i < messages.size(); i++) {
+		for (int i = 0; i < getMessagesSize(); i++) {
 			message = messages.get(i);
 				
 			if (messages.get(i).getContent().toLowerCase().contains(searchWord.toLowerCase())) {
@@ -53,7 +75,11 @@ public class Chat {
 	public void setMessages(LinkedList<Message> messages) {
 		this.messages = messages;
 	}
-
+	
+	public void updateLastChanged () {
+		setLastChanged(Instant.now());
+	}
+	
 	public Set<Contact> getChatMembers() {
 		return chatMembers;
 	}
@@ -68,6 +94,14 @@ public class Chat {
 
 	public void setChatName(String chatName) {
 		this.chatName = chatName;
+	}
+
+	public Instant getLastChanged() {
+		return lastChanged;
+	}
+
+	public void setLastChanged(Instant lastChanged) {
+		this.lastChanged = lastChanged;
 	}
      
 }

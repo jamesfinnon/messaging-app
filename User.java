@@ -4,24 +4,19 @@ import java.util.Comparator;
 
 public class User extends Contact {
     private ArrayList<Contact> contacts;
-    private ArrayList<Chat> chats;
-    private Chat currentChat;
     private boolean alphaSort;
     
     private Contact tempContact;
     
     public User() {
     	contacts = new ArrayList<Contact>();   
-    	chats = new ArrayList<Chat>();
-    	currentChat = new Chat();
+    	
     	alphaSort = false;
     	
     	tempContact = new Contact();
     }
     
-    public void addChat(Chat chat) {
-		chats.add(chat);
-	}
+    
     
 	public void addContact(Contact contact) {
 		contacts.add(contact);
@@ -94,17 +89,7 @@ public class User extends Contact {
 			return contacts.size();
 		}
 		
-	}
-	
-	public int getChatsSize() {
-		if (chats == null) {
-			return 0;
-		}
-		else {
-			return chats.size();
-		}
-		
-	}
+	}	
 	
     // getters and setters
 	public ArrayList<Contact> getContacts() {
@@ -123,21 +108,7 @@ public class User extends Contact {
 		this.alphaSort = alphaSort;
 	}
 
-	public Chat getCurrentChat() {
-		return currentChat;
-	}
 
-	public void setCurrentChat(Chat currentChat) {
-		this.currentChat = currentChat;
-	}
-	
-	public ArrayList<Chat> getChats() {
-		return chats;
-	}
-	
-	public void setChats(ArrayList<Chat> chats) {
-		this.chats = chats;
-	}
 
 	public Contact getTempContact() {
 		return tempContact;
