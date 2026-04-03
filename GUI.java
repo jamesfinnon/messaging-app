@@ -3,7 +3,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Stack;
+import java.util.Set;
 
 public class GUI {
 	
@@ -484,8 +486,14 @@ public class GUI {
        
         JPanel resCon = new JPanel();
         resCon.setLayout(new BoxLayout(resCon, BoxLayout.Y_AXIS));
+        
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.add(resCon, BorderLayout.NORTH);
 
-        JScrollPane scroll = new JScrollPane(resCon);
+        JScrollPane scroll = new JScrollPane(wrapper);
+        
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
       
         for (int i = 0; i < activeUser.getContactsSize(); i++) {
 
@@ -494,7 +502,9 @@ public class GUI {
             JButton contactBtn = new JButton(contactObj.getName());
 
             contactBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
-            contactBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+            contactBtn.setPreferredSize(new Dimension(0, 40));
+            contactBtn.setMinimumSize(new Dimension(0, 40));
+            contactBtn.setMaximumSize(new Dimension(Short.MAX_VALUE, 40));
 
             contactBtn.addActionListener(e -> {
                 contactsD(headerL, headerR, footerP, contactObj);
@@ -1062,6 +1072,8 @@ public class GUI {
         
         Font titleFont = new Font("Arial", Font.BOLD, 14);
         history.add("chatsN");
+        
+        Chat newChat = new Chat();
 
         headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
         footerP.setLayout(new BorderLayout());
@@ -1101,8 +1113,36 @@ public class GUI {
 
         newChats.add(sortH, BorderLayout.NORTH);
 
-        JPanel resCon = new JPanel(new GridLayout(20,1));
-        newChats.add(resCon);
+        JPanel resCon = new JPanel();
+        resCon.setLayout(new BoxLayout(resCon, BoxLayout.Y_AXIS));
+
+        JScrollPane scroll = new JScrollPane(resCon);
+      
+        for (int i = 0; i < activeUser.getContactsSize(); i++) {
+
+            var contactObj = activeUser.getContacts().get(i); 
+
+            JButton contactBtn = new JButton(contactObj.getName());
+
+            contactBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+            contactBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+
+            contactBtn.addActionListener(e -> {
+            	
+                if (newChat.getChatMembers().contains(contactObj)) {
+                	newChat.removeMember(contactObj);
+                	contactBtn.setBackground(null);
+                }
+                else {
+                	newChat.addMember(contactObj);
+                	contactBtn.setBackground(Color.lightGray);
+                }
+            });
+
+            resCon.add(contactBtn);
+        }
+
+        newChats.add(scroll, BorderLayout.CENTER);
 
         revNrep(headerL);
         revNrep(headerR);
