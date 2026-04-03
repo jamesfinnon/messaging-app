@@ -206,7 +206,7 @@ public class GUI {
             history.pop();
     	}
         else if (history.peek().equals("chat")) {    		
-    		chatP(headerL, headerR, footerP, contact);
+    		chatP(headerL, headerR, footerP, activeUser.getCurrentChat());
             history.pop();
     	}
     	
@@ -274,7 +274,7 @@ public class GUI {
         revNrep(footerP);
     }
 
-    public void chatP(JPanel headerL, JPanel headerR, JPanel footerP, Contact contact) {
+    public void chatP(JPanel headerL, JPanel headerR, JPanel footerP, Chat chat) {
         
         history.add("chat");
 
@@ -290,10 +290,10 @@ public class GUI {
         back.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	chatView.removeAll();
-                back(headerL, headerR, footerP, contact);
+                back(headerL, headerR, footerP);
             }
         });
-        JLabel chatName = new JLabel(contact.getName());
+        JLabel chatName = new JLabel(activeUser.getCurrentChat().getChatName());
         chatName.setFont(headerFont);
         headerL.add(chatName);
 
@@ -463,7 +463,6 @@ public class GUI {
         JButton newCon = new JButton("Add Contacts");
         newCon.addActionListener(e -> contactsN(headerL, headerR, footerP));
         footerP.add(newCon, BorderLayout.CENTER);
-
         
         JPanel sortH = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 0));
         JButton alphaSort = new JButton("Alphabetical");
@@ -645,7 +644,27 @@ public class GUI {
         gbc.insets = new Insets(2, 2, 2, 2);
         message.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                chatP(headerL, headerR, footerP, contact);
+            	
+            	boolean found = false;
+            	
+            	for (int i = 0; i < activeUser.getChatsSize(); i++) {
+            		if (activeUser.getChats().get(i).getChatMembers().contains(contact) && activeUser.getChats().get(i).getChatMembers().size() == 1) {
+            			activeUser.setCurrentChat(activeUser.getChats().get(i));
+            			found = true;
+            			break;
+            		}
+            	}
+            		
+            	if (!found) {         	
+            		Chat newChat = new Chat();
+            		newChat.addMember(contact);
+            		activeUser.addChat(newChat);
+            		activeUser.setCurrentChat(newChat);
+            	}
+            	
+            	chatP(headerL, headerR, footerP, activeUser.getCurrentChat());
+            	
+                
             }
         });
         footerP.add(message, gbc);
@@ -1098,7 +1117,25 @@ public class GUI {
         JButton newCon = new JButton("Start Chat");
         newCon.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //where the search method will be called
+            	
+            	System.out.println(activeUser.getChatsSize());
+            	
+                if (newChat.getChatMembers().isEmpty()) {
+                	JOptionPane.showMessageDialog(null, "No contacts selected.");
+                	return;
+                }
+                	
+                for (int i = 0; i < activeUser.getChatsSize(); i++) {
+                	if (activeUser.getChats().get(i).getChatMembers().equals(newChat.getChatMembers())) {
+                		JOptionPane.showMessageDialog(null, "Chat already exists.");
+                        return;
+                	}
+                }
+                	
+                activeUser.addChat(newChat);
+                activeUser.setCurrentChat(newChat);
+                	  	
+                chatP(headerL, headerR, footerP, activeUser.getCurrentChat());
             }
         });
         footerP.add(newCon, BorderLayout.CENTER);
@@ -1115,17 +1152,25 @@ public class GUI {
 
         JPanel resCon = new JPanel();
         resCon.setLayout(new BoxLayout(resCon, BoxLayout.Y_AXIS));
+        
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.add(resCon, BorderLayout.NORTH);
 
-        JScrollPane scroll = new JScrollPane(resCon);
+        JScrollPane scroll = new JScrollPane(wrapper);
+        
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
       
         for (int i = 0; i < activeUser.getContactsSize(); i++) {
 
-            var contactObj = activeUser.getContacts().get(i); 
+        	var contactObj = activeUser.getContacts().get(i); 
 
             JButton contactBtn = new JButton(contactObj.getName());
 
             contactBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
-            contactBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+            contactBtn.setPreferredSize(new Dimension(0, 40));
+            contactBtn.setMinimumSize(new Dimension(0, 40));
+            contactBtn.setMaximumSize(new Dimension(Short.MAX_VALUE, 40));
 
             contactBtn.addActionListener(e -> {
             	
