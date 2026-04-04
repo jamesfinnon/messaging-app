@@ -50,7 +50,7 @@ public class Message {
 	 */
 	public String formatTime(Instant time) {
     	DateTimeFormatter formatter =
-                DateTimeFormatter.ofPattern("HH:mm:ss")
+                DateTimeFormatter.ofPattern("HH:mm")
                         .withZone(ZoneId.systemDefault());
     	
     	return formatter.format(time);

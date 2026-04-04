@@ -271,25 +271,60 @@ public class GUI {
         landingP.removeAll();
         landingP.setLayout(new BorderLayout());
         
-        JPanel chatListPanel = new JPanel();
-        chatListPanel.setLayout(new BoxLayout(chatListPanel, BoxLayout.Y_AXIS));
-
-        ArrayList<Chat> sortedChats = new ArrayList<Chat>();
-        sortedChats = activeUser.getChats();
+        JPanel resCon = new JPanel();
+        resCon.setLayout(new BoxLayout(resCon, BoxLayout.Y_AXIS));
         
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.add(resCon, BorderLayout.NORTH);
 
+        JScrollPane scroll = new JScrollPane(wrapper);
+        
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+      
         for (Chat chat : activeUser.getChats()) {
+        	
+        	chat.updateLastChanged();
+        	
+        	if (chat.getMessages().isEmpty()) {
+        		continue;
+        	}
+        	
+        	Message message = chat.getMessages().getLast();
+        	
+        	 
+        	
+            JButton chatPreview = new JButton();
             
+            String read = "";
             
+            if (message.getSentBy().equals(activeUser)) {
+            	if (message.isRead()) {
+            		read = "read";
+            	}
+            	else {
+            		read = "unread";
+            	}
+            }
             
-            );
-            chatLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            chatListPanel.add(chatLabel);
-            chatListPanel.add(Box.createVerticalStrut(5));
+            String timeSent = message.formatTime(message.getTimeOfMessage());
+            
+            chatPreview.setText("<html>" + chat.getChatName() +  "<br>" + message.getSentBy().getName() +  ": " + message.getContent() + "<br>" + timeSent + "<br>" + read + "</html>");
+            chatPreview.setHorizontalAlignment(SwingConstants.LEFT);
+
+            chatPreview.setAlignmentX(Component.LEFT_ALIGNMENT);
+            chatPreview.setPreferredSize(new Dimension(0, 70));
+            chatPreview.setMinimumSize(new Dimension(0, 70));
+            chatPreview.setMaximumSize(new Dimension(Short.MAX_VALUE, 70));
+
+            chatPreview.addActionListener(e -> {
+                chatP(headerL, headerR, footerP, chat);
+            });
+
+            resCon.add(chatPreview);
         }
 
-        JScrollPane scrollPane = new JScrollPane(chatListPanel);
-        landingP.add(scrollPane, BorderLayout.CENTER);
+        landingP.add(scroll, BorderLayout.CENTER);
         
         //fp
         JButton newChatBut = new JButton("+ New Chat");
@@ -303,6 +338,9 @@ public class GUI {
         revNrep(headerL);
         revNrep(headerR);
         revNrep(footerP);
+        revNrep(landingP);
+        
+        cardLayout.show(mainP, "landing");
     }
 
     public void chatP(JPanel headerL, JPanel headerR, JPanel footerP, Chat chat) {
@@ -343,7 +381,7 @@ public class GUI {
                 msg.setContent(text);
                 msg.setSentBy(activeUser);
                 msg.setTimeOfMessage(Instant.now());
-                msg.setRead(true);
+                msg.setRead(false);
                 
                 chat.getMessages().add(msg);
                          
@@ -360,9 +398,7 @@ public class GUI {
                 		
                 	}
                 }
-                
-                
-                
+
                 messageB.setText("");
 
                 // Refresh chat panel
@@ -416,6 +452,38 @@ public class GUI {
             }
         });
         menu.add(deleteChatItem);
+        JMenuItem editChatName = new JMenuItem("Edit Chat Name");
+        editChatName.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	String newChatName = JOptionPane.showInputDialog("Chat Name:");
+            	
+            	if (newChatName == null) {
+            		return;
+            	}
+            	
+            	for (int i = 0; i < activeUser.getContactsSize(); i++) {               	
+                	if (chat.getChatMembers().contains(activeUser.getContacts().get(i))) { 
+                		if (activeUser.getContacts().get(i).equals(activeUser)) {
+                			continue;
+                		}
+                		for (int j = 0; j < activeUser.getContacts().get(i).getChatsSize(); j++) {
+                			if (activeUser.getContacts().get(i).getChats().get(j).equals(chat)) {
+                				activeUser.getContacts().get(i).getChats().get(j).setChatName(newChatName);;
+                			}
+                		}
+                		
+                	}
+                }
+            	
+            	chat.setChatName(newChatName);
+            	
+            	chatView.removeAll();;
+                history.pop();
+                chatP(headerL, headerR, footerP, chat);
+            }
+        });
+        menu.add(editChatName);
+        
         
         JButton conInfBut = new JButton(":");
         conInfBut.addActionListener(new ActionListener() {
@@ -440,7 +508,11 @@ public class GUI {
         for (Message msg : chat.getMessages()) {
 
             boolean isMe = msg.getSentBy().equals(activeUser);
-
+            
+            if (!isMe) {
+            	msg.setRead(true);
+            }
+            
             JPopupMenu messageMenu = new JPopupMenu();
 
             JMenuItem deleteItem = new JMenuItem("Delete");
@@ -523,11 +595,9 @@ public class GUI {
             if (isMe) {
                 wrapper.add(Box.createHorizontalGlue());
                 wrapper.add(messageBox);
-                System.out.println("itsmeeeeeee");
             } else {
                 wrapper.add(messageBox);
                 wrapper.add(Box.createHorizontalGlue());
-                System.out.println("itsNotmeeee");
             }
             wrapper.setOpaque(false);
 
@@ -581,7 +651,6 @@ public class GUI {
             messageBox.add(bubble);
             messageBox.add(Box.createVerticalStrut(2));
             
-            System.out.println("Reactions: " + msg.getReactions().size());
             if (!msg.getReactions().isEmpty()) {
 
                 JPanel reactionsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
@@ -626,8 +695,6 @@ public class GUI {
             messageBox.add(timeLabel);
    
             messagesPanel.add(wrapper);
-
-            msg.setRead(true);
         }
 
         
@@ -927,7 +994,7 @@ public class GUI {
         JPanel userPanel = new JPanel(new GridLayout(1, 1));
         userPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         
-        JLabel mess0 = new JLabel(message0);
+        JLabel mess0 = new JLabel();
         userPanel.add(mess0);
 
         contactsDet.add(userPanel);
