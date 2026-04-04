@@ -287,18 +287,32 @@ public class GUI {
         	chat.updateLastChanged();
         	
         	if (chat.getMessages().isEmpty()) {
+        		JButton openChat = new JButton(chat.getChatName());;
+        		openChat.setHorizontalAlignment(SwingConstants.LEFT);
+
+        		openChat.setAlignmentX(Component.LEFT_ALIGNMENT);
+        		openChat.setPreferredSize(new Dimension(0, 70));
+        		openChat.setMinimumSize(new Dimension(0, 70));
+        		openChat.setMaximumSize(new Dimension(Short.MAX_VALUE, 70));
+
+        		openChat.addActionListener(e -> {
+                    chatP(headerL, headerR, footerP, chat);
+                });
+        		resCon.add(openChat);
         		continue;
         	}
         	
-        	Message message = chat.getMessages().getLast();
         	
-        	 
+        	
+        	Message message = chat.getMessages().getLast();
         	
             JButton chatPreview = new JButton();
             
+            String sentBy = "";
             String read = "";
             
             if (message.getSentBy().equals(activeUser)) {
+            	sentBy = "You";
             	if (message.isRead()) {
             		read = "read";
             	}
@@ -306,10 +320,13 @@ public class GUI {
             		read = "unread";
             	}
             }
+            else {
+            	sentBy = message.getSentBy().getName();
+            }
             
             String timeSent = message.formatTime(message.getTimeOfMessage());
             
-            chatPreview.setText("<html>" + chat.getChatName() +  "<br>" + message.getSentBy().getName() +  ": " + message.getContent() + "<br>" + timeSent + "<br>" + read + "</html>");
+            chatPreview.setText("<html>" + chat.getChatName() +  "<br>" + sentBy +  ": " + message.getContent() + "<br>" + timeSent + "<br>" + read + "</html>");
             chatPreview.setHorizontalAlignment(SwingConstants.LEFT);
 
             chatPreview.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -875,7 +892,7 @@ public class GUI {
         sortH.add(alphaSort);
         sortH.add(chronSort);
         contactsPage.add(sortH, BorderLayout.NORTH);
-       
+        
         JPanel resCon = new JPanel();
         resCon.setLayout(new BoxLayout(resCon, BoxLayout.Y_AXIS));
         
@@ -991,41 +1008,177 @@ public class GUI {
         separ0.setMaximumSize(new Dimension(Integer.MAX_VALUE, 4));
         contactsDet.add(separ0);
         
-        JPanel userPanel = new JPanel(new GridLayout(1, 1));
-        userPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         
-        JLabel mess0 = new JLabel();
-        userPanel.add(mess0);
+        activeUser.setTempContact(contact);
+    	
+    	boolean found = false;
+    	
+    	for (int i = 0; i < activeUser.getChatsSize(); i++) {
+    		if (activeUser.getChats().get(i).getChatMembers().contains(contact) && activeUser.getChats().get(i).getChatMembers().size() == 2) {
+    			activeUser.setCurrentChat(activeUser.getChats().get(i));
+    			found = true;
+    			break;
+    		}
+    	}
+    	
+    	if (found) {
+    		int numMessages = activeUser.getCurrentChat().getMessagesSize();
+    		if (numMessages > 0 ) {
+    			
+    			JPanel mess = new JPanel(new GridLayout(1, 1));
+    			mess.setMaximumSize(new Dimension(Integer.MAX_VALUE, 70));
+    			
+    			Chat chat = activeUser.getCurrentChat();
+    			Message message = activeUser.getCurrentChat().getMessages().getLast();
+            	
+                JButton goToChat = new JButton();
+                
+                String sentBy = "";
+                String read = "";
+                
+                if (message.getSentBy().equals(activeUser)) {
+                	sentBy = "You";
+                	if (message.isRead()) {
+                		read = "read";
+                	}
+                	else {
+                		read = "unread";
+                	}
+                }
+                else {
+                	sentBy = message.getSentBy().getName();
+                }
+                
+                String timeSent = message.formatTime(message.getTimeOfMessage());
+                
+                goToChat.setText("<html>" + sentBy +  ": " + message.getContent() + "<br>" + timeSent + "<br>" + read + "</html>");
+                goToChat.setHorizontalAlignment(SwingConstants.LEFT);
 
-        contactsDet.add(userPanel);
+                goToChat.setAlignmentX(Component.LEFT_ALIGNMENT);
+                goToChat.setPreferredSize(new Dimension(0, 70));
+                goToChat.setMinimumSize(new Dimension(0, 70));
+                goToChat.setMaximumSize(new Dimension(Short.MAX_VALUE, 70));
 
-        JSeparator separ1 = new JSeparator(JSeparator.HORIZONTAL);
-        separ1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
-        contactsDet.add(separ1);
-        
-        JPanel phonePanel = new JPanel(new GridLayout(1, 1));
-        phonePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        
-        JLabel mess1 = new JLabel(message1);
-        phonePanel.add(mess1);
+                goToChat.addActionListener(e -> {
+                    chatP(headerL, headerR, footerP, chat);
+                });
 
-        contactsDet.add(phonePanel);
-        
-        JSeparator separ2 = new JSeparator(JSeparator.HORIZONTAL);
-        separ2.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
-        contactsDet.add(separ2);
+                mess.add(goToChat);
+    			  			
+    			
+    			contactsDet.add(mess);
+    			
+    			JSeparator separ1 = new JSeparator(JSeparator.HORIZONTAL);
+    	        separ1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
+    	        contactsDet.add(separ1);
+    	        
+    	        
+    		}
+    		if (numMessages > 1) {
+    			JPanel mess = new JPanel(new GridLayout(1, 1));
+    			mess.setMaximumSize(new Dimension(Integer.MAX_VALUE, 70));
+    			
+    			Chat chat = activeUser.getCurrentChat();
+    			Message message = activeUser.getCurrentChat().getMessages().get(numMessages - 2);
+            	
+                JButton goToChat = new JButton();
+                
+                String sentBy = "";
+                String read = "";
+                
+                if (message.getSentBy().equals(activeUser)) {
+                	sentBy = "You";
+                	if (message.isRead()) {
+                		read = "read";
+                	}
+                	else {
+                		read = "unread";
+                	}
+                }
+                else {
+                	sentBy = message.getSentBy().getName();
+                }
+                
+                String timeSent = message.formatTime(message.getTimeOfMessage());
+                
+                goToChat.setText("<html>" + sentBy +  ": " + message.getContent() + "<br>" + timeSent + "<br>" + read + "</html>");
+                goToChat.setHorizontalAlignment(SwingConstants.LEFT);
 
-        JPanel mess2P = new JPanel(new GridLayout(1, 1));
-        mess2P.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        
-        JLabel mess2 = new JLabel(message2);
-        mess2P.add(mess2);
+                goToChat.setAlignmentX(Component.LEFT_ALIGNMENT);
+                goToChat.setPreferredSize(new Dimension(0, 70));
+                goToChat.setMinimumSize(new Dimension(0, 70));
+                goToChat.setMaximumSize(new Dimension(Short.MAX_VALUE, 70));
 
-        contactsDet.add(mess2P);
+                goToChat.addActionListener(e -> {
+                    chatP(headerL, headerR, footerP, chat);
+                });
+
+                mess.add(goToChat);
+    			  			
+    			
+    			contactsDet.add(mess);
+    			
+    			JSeparator separ1 = new JSeparator(JSeparator.HORIZONTAL);
+    	        separ1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
+    	        contactsDet.add(separ1);
+    	        
+    	        
+    		}
+    		
+    		if (numMessages > 2) {
+    			JPanel mess = new JPanel(new GridLayout(1, 1));
+    			mess.setMaximumSize(new Dimension(Integer.MAX_VALUE, 70));
+    			
+    			Chat chat = activeUser.getCurrentChat();
+    			Message message = activeUser.getCurrentChat().getMessages().get(numMessages - 3);
+            	
+                JButton goToChat = new JButton();
+                
+                String sentBy = "";
+                String read = "";
+                
+                if (message.getSentBy().equals(activeUser)) {
+                	sentBy = "You";
+                	if (message.isRead()) {
+                		read = "read";
+                	}
+                	else {
+                		read = "unread";
+                	}
+                }
+                else {
+                	sentBy = message.getSentBy().getName();
+                }
+                
+                String timeSent = message.formatTime(message.getTimeOfMessage());
+                
+                goToChat.setText("<html>" + sentBy +  ": " + message.getContent() + "<br>" + timeSent + "<br>" + read + "</html>");
+                goToChat.setHorizontalAlignment(SwingConstants.LEFT);
+
+                goToChat.setAlignmentX(Component.LEFT_ALIGNMENT);
+                goToChat.setPreferredSize(new Dimension(0, 70));
+                goToChat.setMinimumSize(new Dimension(0, 70));
+                goToChat.setMaximumSize(new Dimension(Short.MAX_VALUE, 70));
+
+                goToChat.addActionListener(e -> {
+                    chatP(headerL, headerR, footerP, chat);
+                });
+
+                mess.add(goToChat);
+    			  			
+    			
+    			contactsDet.add(mess);
+    			
+    			JSeparator separ1 = new JSeparator(JSeparator.HORIZONTAL);
+    	        separ1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
+    	        contactsDet.add(separ1);
+    		}
+    	}
+
+
+       
         
-        JSeparator separ3 = new JSeparator(JSeparator.HORIZONTAL);
-        separ3.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
-        contactsDet.add(separ3);
+        
 
         JButton message = new JButton("Send Message");
         gbc.gridx = 0;
@@ -1088,7 +1241,7 @@ public class GUI {
                     if (confirm == JOptionPane.YES_OPTION) {
             	
                     	activeUser.removeContact(contact);
-                    	back(headerL, headerR, footerP);
+                    	back(headerL, headerR, footerP);                    	
             	}
                     else {
                     	return;
@@ -1525,7 +1678,7 @@ public class GUI {
                 	return;
                 }
                 
-                newChat.addMember(activeUser);
+                
                 
                 for (int i = 0; i < activeUser.getChatsSize(); i++) {
                 	if (activeUser.getChats().get(i).getChatMembers().equals(newChat.getChatMembers())) {
@@ -1534,7 +1687,12 @@ public class GUI {
                 	}
                 }
                 
+                for (Contact contact : newChat.getChatMembers()) {
+                	contact.addChat(newChat);
+                	contact.setCurrentChat(newChat);
+                }
                 
+                newChat.addMember(activeUser);
                 
                 activeUser.addChat(newChat);
                 activeUser.setCurrentChat(newChat);
@@ -1583,7 +1741,7 @@ public class GUI {
                 	contactBtn.setBackground(null);
                 }
                 else {
-                	newChat.addMember(contactObj);
+                	newChat.addMember(contactObj);               	
                 	contactBtn.setBackground(Color.lightGray);
                 }
             });
