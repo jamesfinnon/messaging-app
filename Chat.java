@@ -28,6 +28,18 @@ public class Chat {
 		
 	}
     
+    public String getChatLabel() {
+    	Message message = new Message();
+    	String text = message.getContent();
+    	String sentBy = message.getSentBy().getName();
+    	Instant timeSent = message.getTimeOfMessage();
+    	String strTimeSent = message.formatTime(timeSent);
+    	String read = String.valueOf(message.isRead());
+    	
+    	
+    	String chatLabel = getChatName() + " | " + sentBy + " sent: " + 
+    }
+    
     public int getMessagesSize() {
 		if (messages == null) {
 			return 0;

@@ -274,7 +274,6 @@ public class GUI {
         JPanel chatListPanel = new JPanel();
         chatListPanel.setLayout(new BoxLayout(chatListPanel, BoxLayout.Y_AXIS));
 
-        // Sort chats by most recent message
         ArrayList<Chat> sortedChats = new ArrayList<Chat>();
         sortedChats = activeUser.getChats();
         
@@ -282,11 +281,7 @@ public class GUI {
         for (Chat chat : activeUser.getChats()) {
             
             
-            JLabel chatLabel = new JLabel(
-                String.format("%s: %s %s",
-                    sender,
-                    lastMsg.getContent(),
-                    chat.getMessages().getFirst().getSentBy().equals(activeUser) ? (chat.getMessages().getFirst().isRead() ? "(Read)" : "(Unread)") : "")
+            
             );
             chatLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
             chatListPanel.add(chatLabel);
@@ -346,7 +341,7 @@ public class GUI {
 
                 Message msg = new Message();
                 msg.setContent(text);
-                msg.setSentBy(activeUser); // assuming activeUser is a Contact
+                msg.setSentBy(activeUser);
                 msg.setTimeOfMessage(Instant.now());
                 msg.setRead(true);
                 
@@ -387,13 +382,10 @@ public class GUI {
         });
         headerR.add(searchBut);
         
-        // Create the popup menu
         JPopupMenu menu = new JPopupMenu();
 
-        // Add "Delete Chat" menu item
         JMenuItem deleteChatItem = new JMenuItem("Delete Chat");
         deleteChatItem.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 int confirm = JOptionPane.showConfirmDialog(
                     chatView,
@@ -417,9 +409,9 @@ public class GUI {
                     	}
                     }
                 	
-                    activeUser.getChats().remove(chat); // remove chat from user
-                    chatView.removeAll(); // clear chat view
-                    back(headerL, headerR, footerP); // go back to previous panel
+                    activeUser.getChats().remove(chat); 
+                    chatView.removeAll();
+                    back(headerL, headerR, footerP); 
                 }
             }
         });
@@ -503,14 +495,12 @@ public class GUI {
             messageMenu.add(reactMenu);
             
             MouseAdapter rightClickListener = new MouseAdapter() {
-                @Override
                 public void mousePressed(MouseEvent e) {
                     if (e.isPopupTrigger()) {
                         showMenu(e);
                     }
                 }
 
-                @Override
                 public void mouseReleased(MouseEvent e) {
                     if (e.isPopupTrigger()) {
                         showMenu(e);
@@ -522,13 +512,11 @@ public class GUI {
                 }
             };
 
-            // Message container (vertical stack)
             JPanel messageBox = new JPanel();
             messageBox.setLayout(new BoxLayout(messageBox, BoxLayout.Y_AXIS));
             messageBox.setOpaque(false);
             messageBox.setMaximumSize(new Dimension(maxWidth, Short.MAX_VALUE));
             
-            // Wrapper (left/right alignment)
             JPanel wrapper = new JPanel();
             wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.X_AXIS));
 
@@ -543,7 +531,6 @@ public class GUI {
             }
             wrapper.setOpaque(false);
 
-            // 👤 Sender label (top)
             JLabel senderLabel = new JLabel(msg.getSentBy().getName());
             senderLabel.setFont(new Font("Arial", Font.PLAIN, 11));
             senderLabel.setForeground(Color.GRAY);
@@ -573,15 +560,11 @@ public class GUI {
             msgArea.setOpaque(false);
             msgArea.setBorder(null);
             msgArea.setFont(new Font("Arial", Font.PLAIN, 13));
-
-            // Critical: constrain width
-            //msgArea.setMaximumSize(new Dimension(maxWidth, Short.MAX_VALUE));
             
             msgArea.addMouseListener(rightClickListener);
             bubble.addMouseListener(rightClickListener);
             bubble.add(msgArea, BorderLayout.CENTER);
 
-            // ⏱ Time label (bottom)
             String time = msg.formatTime(msg.getTimeOfMessage());
             JLabel timeLabel = new JLabel(time);
             timeLabel.setFont(new Font("Arial", Font.PLAIN, 10));
@@ -593,7 +576,6 @@ public class GUI {
             	timeLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
             }
 
-            // Assemble
             messageBox.add(senderLabel);
             messageBox.add(Box.createVerticalStrut(2));
             messageBox.add(bubble);
@@ -615,7 +597,6 @@ public class GUI {
                     reactionBtn.setMargin(new Insets(2, 6, 2, 6));
                     reactionBtn.setFocusable(false);
 
-                    // Highlight if current user reacted
                     if (reactedByMe) {
                         reactionBtn.setBackground(Color.YELLOW);
                     } else {
@@ -633,7 +614,6 @@ public class GUI {
                     reactionsPanel.add(reactionBtn);
                 }
 
-                // Align properly
                 if (isMe) {
                     reactionsPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
                 } else {
@@ -701,7 +681,6 @@ public class GUI {
         });
         headerR.add(swap);
         
-        //profilepic
         JPanel picWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER));
         picWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
         JLabel profilePic = new JLabel();
@@ -728,8 +707,7 @@ public class GUI {
         JSeparator separ = new JSeparator(JSeparator.HORIZONTAL);
         separ.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
         profilePage.add(separ);
-        
-        
+                
         JPanel userPanel = new JPanel(new GridLayout(2, 1));
         userPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         
