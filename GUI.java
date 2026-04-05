@@ -20,28 +20,29 @@ import java.util.Stack;
 import java.util.Set;
 
 /**
- * @author faisalsyero
- * @author jamesfinnon
- */
-
-/**
  * GUI class for the messaging application.
  * Manages the user interface and handles all screen navigation.
+ * 
+ * @author faisalsyero - made the GUI
+ * @author jamesfinnon - added user interaction
  */
 public class GUI {
 	
-    //test variables
     Font headerFont = new Font("Arial", Font.BOLD, 18);
     
     User activeUser;
     User secondUser;
     
+    
+    /**
+     * @author jamesfinnon
+     */
     private void swapUsers () {
     	User tempUser = activeUser;
     	activeUser = secondUser;
     	secondUser = tempUser;
     }
-    		    
+    
     Stack<String> history = new Stack<String>();
     
     private JFrame window;
@@ -60,6 +61,7 @@ public class GUI {
     
     /**
      * Main entry point for the application.
+     * @author faisalyero
      */
     public static void main(String[] args) {
         // use the Swing 'invokeLater' method to create a new
@@ -78,6 +80,7 @@ public class GUI {
     
     /**
      * Sets up and displays the main application window.
+     * @author faisalyero
      */
     public void mainFrame() {
     	
@@ -173,7 +176,8 @@ public class GUI {
     }
     
     /**
-     * Navigates back to the previous screen.
+     * navigates to the previous screen
+     * @author jamesfinnon
      */
     public void back (JPanel headerL, JPanel headerR, JPanel footerP) {
     	
@@ -219,7 +223,8 @@ public class GUI {
     }
     
     /**
-     * Navigates back to the previous screen with contact context.
+     * navigates to the previous screen where a contact is needed
+     * @author jamesfinnon
      */
     public void back (JPanel headerL, JPanel headerR, JPanel footerP, Contact contact) {
     	
@@ -239,7 +244,9 @@ public class GUI {
     
     
     /**
-     * Displays the landing/home page with chat list.
+     * main landing page
+     * @author faisalyero
+     * @author jamesfinnon
      */
     public void landingPage(JPanel headerL, JPanel headerR, JPanel footerP) {
     
@@ -299,7 +306,8 @@ public class GUI {
         
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-      
+        
+        // runs through all the chats, and adds them in order of interaction
         for (Chat chat : activeUser.getChats()) {
         	
         	chat.updateLastChanged();
@@ -324,6 +332,7 @@ public class GUI {
         	
         	Message message = chat.getMessages().getLast();
         	
+        	// builds chat button
             JButton chatPreview = new JButton();
             
             String sentBy = "";
@@ -380,6 +389,8 @@ public class GUI {
 
     /**
      * Displays the chat screen for a specific chat.
+     * @author faisalyero
+     * @author jamesfinnon
      */
     public void chatP(JPanel headerL, JPanel headerR, JPanel footerP, Chat chat) {
         
@@ -411,6 +422,10 @@ public class GUI {
         
         JButton sendBut = new JButton("Send =>");
         sendBut.addActionListener(new ActionListener() {
+            /**
+             * sends a message to the chat
+             * @author jamesfinnon
+             */
             public void actionPerformed(ActionEvent e) {
             	String text = messageB.getText().trim();
                 if (text.isEmpty()) return;
@@ -423,7 +438,8 @@ public class GUI {
                 
                 chat.getMessages().add(msg);
                 chat.updateLastChanged();
-                         
+                
+                // finds the chat for the other members and updates accordingly
                 for (int i = 0; i < activeUser.getContactsSize(); i++) {               	
                 	if (chat.getChatMembers().contains(activeUser.getContacts().get(i))) { 
                 		if (activeUser.getContacts().get(i).equals(activeUser)) {
@@ -442,7 +458,7 @@ public class GUI {
                 
                 
                 
-                // Refresh chat panel
+                // refresh chat panel
                 chatView.removeAll();;
                 history.pop();
                 chat.updateLastChanged();
@@ -451,7 +467,7 @@ public class GUI {
         });
         footerP.add(sendBut, BorderLayout.EAST);
 
-        JButton searchBut = new JButton("Search ⌕");
+        JButton searchBut = new JButton("Search");
         searchBut.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 searchP(headerL, headerR, footerP);
@@ -463,6 +479,11 @@ public class GUI {
 
         JMenuItem deleteChatItem = new JMenuItem("Delete Chat");
         deleteChatItem.addActionListener(new ActionListener() {
+        	
+            /**
+             * deletes the current chat
+             * @author jamesfinnon
+             */
             public void actionPerformed(ActionEvent e) {
                 int confirm = JOptionPane.showConfirmDialog(
                     chatView,
@@ -472,6 +493,7 @@ public class GUI {
                 );
                 if (confirm == JOptionPane.YES_OPTION) {
                 	
+                	// deletes chat for other members
                 	for (int i = 0; i < activeUser.getContactsSize(); i++) {               	
                     	if (chat.getChatMembers().contains(activeUser.getContacts().get(i))) { 
                     		if (activeUser.getContacts().get(i).equals(activeUser)) {
@@ -495,6 +517,11 @@ public class GUI {
         menu.add(deleteChatItem);
         JMenuItem editChatName = new JMenuItem("Edit Chat Name");
         editChatName.addActionListener(new ActionListener() {
+        	
+            /**
+             * edits the chat name
+             * @author jamesfinnon
+             */
             public void actionPerformed(ActionEvent e) {
             	String newChatName = JOptionPane.showInputDialog("Chat Name:");
             	
@@ -502,6 +529,7 @@ public class GUI {
             		return;
             	}
             	
+            	// edits the name for other chat members
             	for (int i = 0; i < activeUser.getContactsSize(); i++) {               	
                 	if (chat.getChatMembers().contains(activeUser.getContacts().get(i))) { 
                 		if (activeUser.getContacts().get(i).equals(activeUser)) {
@@ -545,7 +573,7 @@ public class GUI {
         chatView.setLayout(new BorderLayout());
         chatView.add(scrollPane, BorderLayout.CENTER);
 
-        
+        // adds message bubbles to the chat page
         for (Message msg : chat.getMessages()) {
 
             boolean isMe = msg.getSentBy().equals(activeUser);
@@ -555,7 +583,8 @@ public class GUI {
             }
             
             JPopupMenu messageMenu = new JPopupMenu();
-
+            
+            // delete option on right click
             JMenuItem deleteItem = new JMenuItem("Delete");
             deleteItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -567,6 +596,8 @@ public class GUI {
                     chatP(headerL, headerR, footerP, chat);
                 }
             });
+            
+            // edit option on right click
             JMenuItem editItem = new JMenuItem("Edit");
             editItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -583,6 +614,7 @@ public class GUI {
                 }
             });
             
+            // react option on right click
             String[] emojis = {"👍", "❤️", "😂"};
             JMenu reactMenu = new JMenu("React");
             for (String emoji : emojis) {
@@ -600,6 +632,7 @@ public class GUI {
                 reactMenu.add(emojiItem);
             }
             
+            // only adds edit and delete options if the message is sent by you
             if (isMe) {
             	messageMenu.add(editItem);
             	messageMenu.add(deleteItem);
@@ -632,7 +665,8 @@ public class GUI {
             
             JPanel wrapper = new JPanel();
             wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.X_AXIS));
-
+            
+            // aligns right for your messages, left for everyone else
             if (isMe) {
                 wrapper.add(Box.createHorizontalGlue());
                 wrapper.add(messageBox);
@@ -663,7 +697,7 @@ public class GUI {
             }
             
             bubble.setMaximumSize(new Dimension(maxWidth, Short.MAX_VALUE));  
-
+            
             JTextArea msgArea = new JTextArea(msg.getContent());
             msgArea.setLineWrap(true);
             msgArea.setWrapStyleWord(true);
@@ -693,7 +727,8 @@ public class GUI {
             messageBox.add(Box.createVerticalStrut(2));
             
             if (!msg.getReactions().isEmpty()) {
-
+            	
+            	// builds rection panel under message
                 JPanel reactionsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
                 reactionsPanel.setOpaque(false);
 
@@ -753,6 +788,8 @@ public class GUI {
     
     /**
      * Displays the user's profile page.
+     * @author faisalyero
+     * @author jamesfinnon
      */
     public void profileP(JPanel headerL, JPanel headerR, JPanel footerP) {
     	
@@ -860,8 +897,6 @@ public class GUI {
         editPPanel.add(editProfile);
         profilePage.add(editPPanel);
         
-        
-        
         JButton save = new JButton("Save Account");
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -870,6 +905,11 @@ public class GUI {
         gbc.weighty = 0.5;
         
         save.addActionListener(new ActionListener() {
+        	
+            /**
+             * calls for the program to be saved to disk
+             * @author jamesfinnon
+             */
             public void actionPerformed(ActionEvent e) {
             	
             	JFileChooser chooser = new JFileChooser();
@@ -900,6 +940,11 @@ public class GUI {
         gbc.weightx = 0.5;
         gbc.weighty = 0.5;
         load.addActionListener(new ActionListener() {
+        	
+            /**
+             * calls for the program to be loaded
+             * @author jamesfinnon
+             */
             public void actionPerformed(ActionEvent e) {
             	
             	// file chooser
@@ -921,12 +966,7 @@ public class GUI {
         });
         
         footerP.add(load, gbc);
-        
-        
-     
-     
-        
-        
+       
         revNrep(headerL);
         revNrep(headerR);
         revNrep(footerP);
@@ -937,6 +977,8 @@ public class GUI {
 
     /**
      * Displays the contacts list page.
+     * @author faisalyero
+     * @author jamesfinnon
      */
     public void contactsP(JPanel headerL, JPanel headerR, JPanel footerP) {
 
@@ -1000,7 +1042,8 @@ public class GUI {
         
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-      
+        
+        // adds list of contacts to the display
         for (int i = 0; i < activeUser.getContactsSize(); i++) {
 
             Contact contactObj = activeUser.getContacts().get(i); 
@@ -1031,6 +1074,8 @@ public class GUI {
     
     /**
      * Displays details for a specific contact.
+     * @author faisalyero
+     * @author jamesfinnon
      */
     public void contactsD(JPanel headerL, JPanel headerR, JPanel footerP, Contact contact) {
 
@@ -1112,6 +1157,7 @@ public class GUI {
     	
     	boolean found = false;
     	
+    	// looks for 1 to 1 chat with user
     	for (int i = 0; i < activeUser.getChatsSize(); i++) {
     		if (activeUser.getChats().get(i).getChatMembers().contains(contact) && activeUser.getChats().get(i).getChatMembers().size() == 2) {
     			activeUser.setCurrentChat(activeUser.getChats().get(i));
@@ -1120,6 +1166,7 @@ public class GUI {
     		}
     	}
     	
+    	// display 3 most recent messages
     	if (found) {
     		int numMessages = activeUser.getCurrentChat().getMessagesSize();
     		if (numMessages > 0 ) {
@@ -1273,12 +1320,7 @@ public class GUI {
     	        contactsDet.add(separ1);
     		}
     	}
-
-
-       
-        
-        
-
+    	
         JButton message = new JButton("Send Message");
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -1288,6 +1330,11 @@ public class GUI {
         gbc.weighty = 0.5; 
         gbc.insets = new Insets(2, 2, 2, 2);
         message.addActionListener(new ActionListener() {
+        	
+            /**
+             * attempts to load active 1 to 1 chat with contact, creates new chat otherwise
+             * @author jamesfinnon
+             */
             public void actionPerformed(ActionEvent e) {
             	
             	activeUser.setTempContact(contact);
@@ -1366,6 +1413,8 @@ public class GUI {
 
     /**
      * Displays the new contact creation page.
+     * @author faisal yero
+     * @author jamesfinnon
      */
     public void contactsN(JPanel headerL, JPanel headerR, JPanel footerP) {
 
@@ -1425,7 +1474,7 @@ public class GUI {
         profilePic.setHorizontalAlignment(JLabel.CENTER);
         profilePic.setVerticalAlignment(JLabel.CENTER);
         
-        BufferedImage img = activeUser.getProfilePicture();
+        BufferedImage img = tempContact.getProfilePicture();
         Image scaled = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
         profilePic.setIcon(new ImageIcon(scaled));
         
@@ -1487,6 +1536,8 @@ public class GUI {
 
     /**
      * Displays the profile editing page.
+     * @author faisalyero
+     * @author jamesfinnon
      */
     public void profileE(JPanel headerL, JPanel headerR, JPanel footerP) {
 
@@ -1611,6 +1662,8 @@ public class GUI {
 
     /**
      * Displays the contact editing page.
+     * @author faisalyero
+     * @author jamesfinnon
      */
     public void contactsE(JPanel headerL, JPanel headerR, JPanel footerP, Contact contact) {
 
@@ -1740,6 +1793,8 @@ public class GUI {
 
     /**
      * Displays the new chat creation page.
+     * @author faisalyero
+     * @author jamesfinnon
      */
     public void chatsN(JPanel headerL, JPanel headerR, JPanel footerP) {
         
@@ -1861,6 +1916,8 @@ public class GUI {
 
     /**
      * Displays the search page for chats and messages.
+     * @author faisalyero
+     * @author jamesfinnon
      */
     public void searchP(JPanel headerL, JPanel headerR, JPanel footerP) {  
     	
@@ -2105,6 +2162,7 @@ public class GUI {
 
     /**
      * Revalidates and repaints the given panel.
+     * @author faisalyero
      */
     public void revNrep(JPanel panel) {
         panel.revalidate();
@@ -2113,6 +2171,7 @@ public class GUI {
     
     /**
      * Saves user data to a file.
+     * @author jamesfinnon
      */
     public void save(String filename) {
     	// try to set up output stream to filename
@@ -2132,6 +2191,7 @@ public class GUI {
     
     /**
      * Loads user data from a file.
+     * @author jamesfinnon
      */
     public void load(String filename) {
     	try (ObjectInputStream in =
