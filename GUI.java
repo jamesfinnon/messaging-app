@@ -244,7 +244,7 @@ public class GUI {
     
     
     /**
-     * main landing page
+     * Displays the landing/home page with chat list.
      * @author faisalyero
      * @author jamesfinnon
      */
