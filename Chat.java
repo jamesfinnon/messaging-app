@@ -25,6 +25,7 @@ public class Chat implements Serializable {
     	messages = new LinkedList<Message>();
     	chatMembers = new HashSet<Contact>();
     	chatName = "";
+    	lastChanged = Instant.now();
     }
     
     /**

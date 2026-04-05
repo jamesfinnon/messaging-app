@@ -175,7 +175,7 @@ public class Contact implements Serializable {
         return value.trim();
     }
     
-    public void updateOrder() {
+    public void updateOrder() {	
     	Collections.sort(chats, Comparator.comparing(Chat::getLastChanged));
     	Collections.reverse(chats);
     }

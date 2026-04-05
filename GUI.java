@@ -363,6 +363,7 @@ public class GUI {
             chatPreview.setMaximumSize(new Dimension(Short.MAX_VALUE, 70));
 
             chatPreview.addActionListener(e -> {
+            	activeUser.setCurrentChat(chat);
                 chatP(headerL, headerR, footerP, chat);
             });
 
