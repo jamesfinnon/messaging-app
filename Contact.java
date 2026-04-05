@@ -153,6 +153,7 @@ public class Contact implements Serializable {
     
     public void updateOrder() {
     	Collections.sort(chats, Comparator.comparing(Chat::getLastChanged));
+    	Collections.reverse(chats);
     }
     
     

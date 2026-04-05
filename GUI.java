@@ -227,6 +227,7 @@ public class GUI {
     public void landingPage(JPanel headerL, JPanel headerR, JPanel footerP) {
     	
     	history.add("landing");
+    	activeUser.updateOrder();
     	
         headerL.setLayout(new BoxLayout(headerL, BoxLayout.Y_AXIS));
         footerP.setLayout(new BorderLayout());
@@ -401,6 +402,7 @@ public class GUI {
                 msg.setRead(false);
                 
                 chat.getMessages().add(msg);
+                chat.updateLastChanged();
                          
                 for (int i = 0; i < activeUser.getContactsSize(); i++) {               	
                 	if (chat.getChatMembers().contains(activeUser.getContacts().get(i))) { 
@@ -417,7 +419,9 @@ public class GUI {
                 }
 
                 messageB.setText("");
-
+                
+                
+                
                 // Refresh chat panel
                 chatView.removeAll();;
                 history.pop();
