@@ -19,6 +19,15 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.Set;
 
+/**
+ * @author faisalsyero
+ * @author jamesfinnon
+ */
+
+/**
+ * GUI class for the messaging application.
+ * Manages the user interface and handles all screen navigation.
+ */
 public class GUI {
 	
     //test variables
@@ -48,6 +57,10 @@ public class GUI {
     private JPanel contactsNew;
     private JPanel searchPage;
     private JPanel newChats;
+    
+    /**
+     * Main entry point for the application.
+     */
     public static void main(String[] args) {
         // use the Swing 'invokeLater' method to create a new
         // Runnable object to run on the EDT
@@ -63,6 +76,9 @@ public class GUI {
 
     }
     
+    /**
+     * Sets up and displays the main application window.
+     */
     public void mainFrame() {
     	
     	activeUser = new User();
@@ -157,12 +173,7 @@ public class GUI {
     }
     
     /**
-     * @author jamesfinnon
-     * 
-     * @param landingP
-     * @param headerL
-     * @param headerR
-     * @param footerP
+     * Navigates back to the previous screen.
      */
     public void back (JPanel headerL, JPanel headerR, JPanel footerP) {
     	
@@ -207,6 +218,9 @@ public class GUI {
     	
     }
     
+    /**
+     * Navigates back to the previous screen with contact context.
+     */
     public void back (JPanel headerL, JPanel headerR, JPanel footerP, Contact contact) {
     	
     	history.pop();
@@ -224,8 +238,11 @@ public class GUI {
     }
     
     
+    /**
+     * Displays the landing/home page with chat list.
+     */
     public void landingPage(JPanel headerL, JPanel headerR, JPanel footerP) {
-    	
+    
     	history.add("landing");
     	activeUser.updateOrder();
     	
@@ -361,6 +378,9 @@ public class GUI {
         cardLayout.show(mainP, "landing");
     }
 
+    /**
+     * Displays the chat screen for a specific chat.
+     */
     public void chatP(JPanel headerL, JPanel headerR, JPanel footerP, Chat chat) {
         
         history.add("chat");
@@ -731,6 +751,9 @@ public class GUI {
         cardLayout.show(mainP, "chat");
     }
     
+    /**
+     * Displays the user's profile page.
+     */
     public void profileP(JPanel headerL, JPanel headerR, JPanel footerP) {
     	
     	history.add("profile");
@@ -912,6 +935,9 @@ public class GUI {
         cardLayout.show(mainP, "profile");
     }
 
+    /**
+     * Displays the contacts list page.
+     */
     public void contactsP(JPanel headerL, JPanel headerR, JPanel footerP) {
 
         history.add("contactsP");
@@ -1003,7 +1029,9 @@ public class GUI {
         cardLayout.show(mainP, "contactsP");
     }
     
-
+    /**
+     * Displays details for a specific contact.
+     */
     public void contactsD(JPanel headerL, JPanel headerR, JPanel footerP, Contact contact) {
 
         history.add("contactsD");
@@ -1336,6 +1364,9 @@ public class GUI {
         cardLayout.show(mainP, "contactsD");        
     }
 
+    /**
+     * Displays the new contact creation page.
+     */
     public void contactsN(JPanel headerL, JPanel headerR, JPanel footerP) {
 
         history.add("contactsN");
@@ -1455,14 +1486,7 @@ public class GUI {
     }
 
     /**
-     * page for editing your profile
-     * 
-     * @author faisalsyero
-     * @author jamesfinnon
-     * 
-     * @param headerL
-     * @param headerR
-     * @param footerP
+     * Displays the profile editing page.
      */
     public void profileE(JPanel headerL, JPanel headerR, JPanel footerP) {
 
@@ -1585,6 +1609,9 @@ public class GUI {
         cardLayout.show(mainP, "Eprofile");
     }
 
+    /**
+     * Displays the contact editing page.
+     */
     public void contactsE(JPanel headerL, JPanel headerR, JPanel footerP, Contact contact) {
 
         history.add("contactsEdit");
@@ -1711,6 +1738,9 @@ public class GUI {
         cardLayout.show(mainP, "contactsEdit");
     }
 
+    /**
+     * Displays the new chat creation page.
+     */
     public void chatsN(JPanel headerL, JPanel headerR, JPanel footerP) {
         
         Font titleFont = new Font("Arial", Font.BOLD, 14);
@@ -1829,6 +1859,9 @@ public class GUI {
         cardLayout.show(mainP, "chatsN");
     }
 
+    /**
+     * Displays the search page for chats and messages.
+     */
     public void searchP(JPanel headerL, JPanel headerR, JPanel footerP) {  
     	
     	Font titleFont = new Font("Arial", Font.BOLD, 14);
@@ -2070,11 +2103,17 @@ public class GUI {
         cardLayout.show(mainP, "search");
     }
 
+    /**
+     * Revalidates and repaints the given panel.
+     */
     public void revNrep(JPanel panel) {
         panel.revalidate();
         panel.repaint();
     }
     
+    /**
+     * Saves user data to a file.
+     */
     public void save(String filename) {
     	// try to set up output stream to filename
 	    try (ObjectOutputStream out =
@@ -2091,6 +2130,9 @@ public class GUI {
 	    }
 	}
     
+    /**
+     * Loads user data from a file.
+     */
     public void load(String filename) {
     	try (ObjectInputStream in =
     			new ObjectInputStream(new FileInputStream(filename))) {
