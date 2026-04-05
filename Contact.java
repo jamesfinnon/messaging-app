@@ -21,7 +21,8 @@ import javax.swing.JOptionPane;
  * Stores contact details including name, phone number, unique ID, profile picture, 
  * and date added. Provides validation, formatting, and search functionality.
  *
- * @author Sameer Kaushal
+ * @author sameerkaushal
+ * @author jamefinnon
  */
 public class Contact implements Serializable {
 
@@ -29,14 +30,15 @@ public class Contact implements Serializable {
 	private String username;
 	private String number;
 	private UUID id;
+	// transient as buffered images aren't serializable
 	private transient BufferedImage profilePicture;
+	
 	private Instant dateAdded;
 	
 	private ArrayList<Chat> chats;
     private Chat currentChat;
 	/**
 	 * default constructor
-	 * 
 	 * @author jamesfinnon
 	 */
 	public Contact() {
@@ -52,20 +54,36 @@ public class Contact implements Serializable {
     	currentChat = new Chat();
 	}
 	
+	/**
+	 * used to help write the image to file - buffered images aren't serializable
+	 * @author jamesfinnon
+	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         ImageIO.write(profilePicture, "png", out); 
     }
-
+	
+	/**
+	 * used to help load the image from file
+	 * @author jamesfinnon
+	 */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         setProfilePicture(ImageIO.read(in));
     }
 	
+    
 	public void addChat(Chat chat) {
 		chats.add(chat);
 	}
 	
+	
+	/**
+	 * searches through chat names
+	 * @author jamesfinnon
+	 * @param searchWord
+	 * @return an array with matching chats
+	 */
 	public ArrayList<Chat> searchChats(String searchWord) {
 		
 		Chat chat = new Chat();
@@ -81,6 +99,12 @@ public class Contact implements Serializable {
 		return matches;
 	}
 	
+	/**
+	 * searches through message content
+	 * @author jamesfinnon
+	 * @param searchWord
+	 * @return an array with matching messages
+	 */
 	public ArrayList<Message> searchMessages(String searchWord) {		
 		
 		ArrayList<Message> matches = new ArrayList<Message>();
@@ -173,6 +197,11 @@ public class Contact implements Serializable {
 		}
 	}
 	
+	
+	/**
+	 * choose an image from file
+	 * @author jamesfinnon
+	 */
 	public void chooseImage() {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle("Select Profile Picture");

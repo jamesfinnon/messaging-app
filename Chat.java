@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.Set;
 
 /**
+ * class to handle the linked list of message objects
  * @author jamesfinnon
  */
 public class Chat implements Serializable {
@@ -16,12 +17,20 @@ public class Chat implements Serializable {
     // set as can be unordered
     private Set<Contact> chatMembers;
     
+    /**
+     * default constructor
+     * @author jamesfinnon
+     */
     public Chat () {
     	messages = new LinkedList<Message>();
     	chatMembers = new HashSet<Contact>();
     	chatName = "";
     }
     
+    /**
+     * @author jamesfinnon
+     * @return the number of chat members
+     */
     public int getChatMembersSize() {
 		if (chatMembers == null) {
 			return 0;
@@ -32,6 +41,10 @@ public class Chat implements Serializable {
 		
 	}
     
+    /**
+     * @author jamesfinnon
+     * @return the number of messages in the chat
+     */
     public int getMessagesSize() {
 		if (messages == null) {
 			return 0;
@@ -42,10 +55,12 @@ public class Chat implements Serializable {
 		
 	}
     
-	public LinkedList<Message> getMessages() {
-		return messages;
-	}	
 	
+	
+	/**
+	 * @author jamesfinnon
+	 * @param contact to be added
+	 */
 	public void addMember (Contact contact) {
 		chatMembers.add(contact);
 		
@@ -57,16 +72,33 @@ public class Chat implements Serializable {
 		}
 	}
 	
+	
+	/**
+	 * @author jamesfinnon
+	 * @param contact to be removed
+	 */
 	public void removeMember (Contact contact) {
 		chatMembers.remove(contact);
 	}
-
-	public void setMessages(LinkedList<Message> messages) {
-		this.messages = messages;
-	}
 	
+	
+	
+	
+	/**
+	 * updates the last changed instant
+	 * @author jamesfinnon
+	 */
 	public void updateLastChanged () {
 		setLastChanged(Instant.now());
+	}
+	
+	// getters and setters
+	public LinkedList<Message> getMessages() {
+		return messages;
+	}	
+	
+	public void setMessages(LinkedList<Message> messages) {
+		this.messages = messages;
 	}
 	
 	public Set<Contact> getChatMembers() {

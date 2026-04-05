@@ -10,7 +10,6 @@ import java.util.Set;
 
 /**
  * class for individual messages within a chat
- * 
  * @author jamesfinnon
  */
 public class Message implements Serializable {
@@ -19,18 +18,25 @@ public class Message implements Serializable {
     private Instant timeOfMessage;
     private Contact sentBy;
     
+    // used in gui class to store what chat a message belongs to
     private Chat tempChat = new Chat();  
-
+    
+    // hashmap of emoji strings, against a set of contacts
     private Map<String, Set<Contact>> reactions = new HashMap<>();
 
-    // Add or toggle reaction
+    /**
+     * add or toggle reaction
+     * @author jamesfinnon
+     * @param emoji
+     * @param user
+     */
     public void addReaction(String emoji, Contact user) {
         reactions.putIfAbsent(emoji, new HashSet<>());
         
         Set<Contact> users = reactions.get(emoji);
 
         if (users.contains(user)) {
-            users.remove(user); // toggle off
+            users.remove(user);
             if (users.isEmpty()) {
                 reactions.remove(emoji);
             }
@@ -40,7 +46,7 @@ public class Message implements Serializable {
     }
 	
 	/**
-	 * formats the time inputed to hours:minutes:seconds
+	 * formats the time inputed to hours:minutes
 	 * taken from the emergency system assignment
 	 * 
 	 * @author jamesfinnon
