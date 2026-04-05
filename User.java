@@ -3,12 +3,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+/**
+ * class for the program user
+ * @author jamesfinnon
+ */
 public class User extends Contact implements Serializable{
     private ArrayList<Contact> contacts;
     private boolean alphaSort;
     private String lastSearch = "";
     private Contact tempContact;
     
+    
+    /**
+     * default constructor
+     * @author jamesfinnon
+     */
     public User() {
     	contacts = new ArrayList<Contact>();   
     	
@@ -18,7 +27,10 @@ public class User extends Contact implements Serializable{
     }
     
     
-    
+	/**
+	 * @author jamesfinnon
+	 * @param contact to be added
+	 */
 	public void addContact(Contact contact) {
 		contacts.add(contact);
 		
@@ -31,6 +43,11 @@ public class User extends Contact implements Serializable{
 		
 	}
 	
+	
+	/**
+	 * @author jamesfinnon
+	 * @param contact to be removed
+	 */
 	public void removeContact(Contact contact) {
 		for (int i = 0; i < getContactsSize(); i++) {
 			if (contact == contacts.get(i)) {
@@ -40,10 +57,16 @@ public class User extends Contact implements Serializable{
 		}
 	}
 	
+	/**
+	 * @author jamesfinnon
+	 */
 	public void sortContactsAlphabetically() {
 		Collections.sort(contacts, Comparator.comparing(Contact::getName));
 	}
 	
+	/**
+	 * @author jamesfinnon
+	 */
 	public void sortContactsRecent() {
 		Collections.sort(contacts, Comparator.comparing(Contact::getDateAdded));
 		Collections.reverse(contacts);
@@ -52,9 +75,11 @@ public class User extends Contact implements Serializable{
 	
     
 	/**
+	 * basic linear search
+	 * @author jamesfinnon
 	 * @param searchWord
-	 * @param searchBy
-	 * @return
+	 * @param searchBy 0 for name, 1 for username
+	 * @return arraylist of contacts that match the keyword
 	 */
 	public ArrayList<Contact> searchContacts(String searchWord, int searchBy) {
 		
@@ -82,6 +107,10 @@ public class User extends Contact implements Serializable{
 		return matches;
 	}
 	
+	/**
+	 * @author jamesfinnon
+	 * @return the number of contacts
+	 */
 	public int getContactsSize() {
 		if (contacts == null) {
 			return 0;
