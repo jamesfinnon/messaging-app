@@ -1,6 +1,9 @@
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,13 +23,13 @@ import javax.swing.JOptionPane;
  *
  * @author Sameer Kaushal
  */
-public class Contact {
+public class Contact implements Serializable {
 
 	private String name;
 	private String username;
 	private String number;
 	private UUID id;
-	private BufferedImage profilePicture;
+	private transient BufferedImage profilePicture;
 	private Instant dateAdded;
 	
 	private ArrayList<Chat> chats;
@@ -49,51 +52,52 @@ public class Contact {
     	currentChat = new Chat();
 	}
 	
-	/**
-	 * creates a new Contact with the specified details
-	 * sets dateAdded to the current time
-	 * 
-	 * @author sameerkashaul
-	 * @author jamesfinnon
-	 *
-	 * @param name the contact's name
-	 * @param username the contact's username
-	 * @param number the contact's phone number
-	 * @param profilePicture the path to the contact's profile picture
-	 */
-	public Contact(String name, String username, String number, String profilePicturePath) {
-		
-		setName(name);
-		setUsername(username);
-		setNumber(number);
-		id = UUID.randomUUID();
-		setImage("defaultUser.jpg");
-	}
+	private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        ImageIO.write(profilePicture, "png", out); 
+    }
 
-	/**
-	 * used for loading from disk
-	 * 
-	 * @author sameerkaushal
-	 * @author jamesfinnon
-	 *
-	 * @param name the contact's name
-	 * @param username the contact's username
-	 * @param number the contact's phone number
-	 * @param profilePicture the path to the contact's profile picture
-	 * @param dateAdded the instant when this contact was added
-	 */
-	public Contact(String name, String username, String number, String profilePicturePath, Instant dateAdded) {
-		
-		setName(name);
-		setUsername(username);
-		setNumber(number);
-		id = UUID.randomUUID();
-		setImage("defaultUser.jpg");
-		this.dateAdded = Objects.requireNonNull(dateAdded, "Date added cannot be null");
-	}
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        setProfilePicture(ImageIO.read(in));
+    }
 	
 	public void addChat(Chat chat) {
 		chats.add(chat);
+	}
+	
+	public ArrayList<Chat> searchChats(String searchWord) {
+		
+		Chat chat = new Chat();
+		ArrayList<Chat> matches = new ArrayList<Chat>();
+		
+		for (int i = 0; i < getChatsSize(); i++) {
+			chat = chats.get(i);
+				
+			if (chat.getChatName().toLowerCase().contains(searchWord.toLowerCase())) {
+				matches.add(chat);
+			}
+		}		
+		return matches;
+	}
+	
+	public ArrayList<Message> searchMessages(String searchWord) {		
+		
+		ArrayList<Message> matches = new ArrayList<Message>();
+		
+		for (Chat chat : chats) {
+			Message message = new Message();
+			for (int i = 0; i < chat.getMessagesSize(); i++) {
+				message = chat.getMessages().get(i);
+				
+				if (chat.getMessages().get(i).getContent().toLowerCase().contains(searchWord.toLowerCase())) {
+					message.setTempChat(chat);
+					matches.add(message);
+					
+				}
+			}
+		}
+		return matches;
 	}
 	
     /**

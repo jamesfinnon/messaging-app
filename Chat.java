@@ -1,10 +1,14 @@
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
-public class Chat {
+/**
+ * @author jamesfinnon
+ */
+public class Chat implements Serializable {
     private LinkedList<Message> messages;
     private String chatName;
     private Instant lastChanged;
@@ -40,22 +44,7 @@ public class Chat {
     
 	public LinkedList<Message> getMessages() {
 		return messages;
-	}
-	
-	public ArrayList<Message> searchMessages(String searchWord, int searchBy) {
-		
-		Message message = new Message();
-		ArrayList<Message> matches = new ArrayList<Message>();
-		
-		for (int i = 0; i < getMessagesSize(); i++) {
-			message = messages.get(i);
-				
-			if (messages.get(i).getContent().toLowerCase().contains(searchWord.toLowerCase())) {
-				matches.add(message);
-			}
-		}
-		return matches;
-	}
+	}	
 	
 	public void addMember (Contact contact) {
 		chatMembers.add(contact);

@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -12,11 +13,13 @@ import java.util.Set;
  * 
  * @author jamesfinnon
  */
-public class Message {
+public class Message implements Serializable {
     private String content;
     private boolean read;
     private Instant timeOfMessage;
     private Contact sentBy;
+    
+    private Chat tempChat = new Chat();  
 
     private Map<String, Set<Contact>> reactions = new HashMap<>();
 
@@ -34,10 +37,6 @@ public class Message {
         } else {
             users.add(user);
         }
-    }
-
-    public int getReactionCount(String emoji) {
-        return reactions.getOrDefault(emoji, Collections.emptySet()).size();
     }
 	
 	/**
@@ -90,6 +89,14 @@ public class Message {
 
 	public void setReactions(Map<String, Set<Contact>> reactions) {
 		this.reactions = reactions;
+	}
+
+	public Chat getTempChat() {
+		return tempChat;
+	}
+
+	public void setTempChat(Chat tempChat) {
+		this.tempChat = tempChat;
 	}
 
 }

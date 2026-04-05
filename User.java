@@ -1,11 +1,12 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class User extends Contact {
+public class User extends Contact implements Serializable{
     private ArrayList<Contact> contacts;
     private boolean alphaSort;
-    
+    private String lastSearch = "";
     private Contact tempContact;
     
     public User() {
@@ -64,7 +65,7 @@ public class User extends Contact {
 			for (int i = 0; i < getContactsSize(); i++) {
 				contact = contacts.get(i);
 				
-				if (contacts.get(i).getName().toLowerCase().contains(searchWord.toLowerCase())) {
+				if (contact.getName().toLowerCase().contains(searchWord.toLowerCase())) {
 					matches.add(contact);
 				}
 			}
@@ -73,7 +74,7 @@ public class User extends Contact {
 			for (int i = 0; i < getContactsSize(); i++) {
 				contact = contacts.get(i);
 				
-				if (contacts.get(i).getUsername().contains(searchWord)) {
+				if (contact.getUsername().toLowerCase().contains(searchWord.toLowerCase())) {
 					matches.add(contact);
 				}
 			}
@@ -116,5 +117,17 @@ public class User extends Contact {
 
 	public void setTempContact(Contact tempContact) {
 		this.tempContact = tempContact;
+	}
+
+
+
+	public String getLastSearch() {
+		return lastSearch;
+	}
+
+
+
+	public void setLastSearch(String lastSearch) {
+		this.lastSearch = lastSearch;
 	}
 }

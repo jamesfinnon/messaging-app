@@ -1,11 +1,19 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Stack;
@@ -15,14 +23,6 @@ public class GUI {
 	
     //test variables
     Font headerFont = new Font("Arial", Font.BOLD, 18);
-    
-    String friend = new String("James Finnon");
-    String profileName = new String("Faisal Yero");
-    String userName = new String("faisalyero123");
-    String phoneNo = new String("+44 482934 4289384");
-    String message0 = new String("HI");
-    String message1 = new String("hello");
-    String message2 = new String("goodbye");
     
     User activeUser;
     User secondUser;
@@ -734,7 +734,8 @@ public class GUI {
     	Font titleFont = new Font("Arial", Font.BOLD, 14);
 
         headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
-        footerP.setLayout(new BorderLayout());
+        footerP.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
 
         profilePage.removeAll();
         headerL.removeAll();
@@ -763,7 +764,7 @@ public class GUI {
                 back(headerL, headerR, footerP);
             }
         });
-        headerR.add(swap);
+        headerR.add(swap);       
         
         JPanel picWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER));
         picWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
@@ -833,6 +834,72 @@ public class GUI {
         profilePage.add(editPPanel);
         
         
+        
+        JButton save = new JButton("Save Account");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0.5;
+        gbc.weighty = 0.5;
+        
+        save.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	
+            	JFileChooser chooser = new JFileChooser();
+                
+            	// ensures saved file is correct file format/extension
+                chooser.setFileFilter(new FileNameExtensionFilter("Data Files (*.dat)", "dat"));
+                
+                // saves file to pc
+                int result = chooser.showSaveDialog(null);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    String filePath = chooser.getSelectedFile().getAbsolutePath();
+                    
+                    save(filePath);
+                    
+                    JOptionPane.showMessageDialog(null, "Account saved successfully.");
+                    
+                    back(headerL, headerR, footerP);
+                }
+            }
+        });
+        
+        footerP.add(save, gbc);
+        
+        JButton load = new JButton("Load Account");
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0.5;
+        gbc.weighty = 0.5;
+        load.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	
+            	// file chooser
+            	JFileChooser chooser = new JFileChooser();
+            	
+            	
+                int result = chooser.showOpenDialog(null);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                	
+                    String filePath = chooser.getSelectedFile().getAbsolutePath();
+                    load(filePath);
+                    
+                    JOptionPane.showMessageDialog(null, "Account loaded successfully.");
+                    
+                    back(headerL, headerR, footerP);
+                }
+                
+            }
+        });
+        
+        footerP.add(load, gbc);
+        
+        
+     
+     
+        
+        
         revNrep(headerL);
         revNrep(headerR);
         revNrep(footerP);
@@ -866,7 +933,7 @@ public class GUI {
         header.setFont(headerFont);
         headerL.add(header);
 
-        JButton searchBut = new JButton("Search ⌕");
+        JButton searchBut = new JButton("Search");
         searchBut.addActionListener(e -> searchP(headerL, headerR, footerP));
         headerR.add(searchBut);
 
@@ -1703,8 +1770,7 @@ public class GUI {
         footerP.add(newCon, BorderLayout.CENTER);
 
         JPanel sortH = new JPanel(new GridLayout(2, 1, 0, 6));
-        JTextField alphaSort = new JTextField();
-        sortH.add(alphaSort);
+        
 
         JLabel direcInf = new JLabel("Select Contacts");
         direcInf.setFont(titleFont);
@@ -1759,12 +1825,13 @@ public class GUI {
         cardLayout.show(mainP, "chatsN");
     }
 
-    public void searchP(JPanel headerL, JPanel headerR, JPanel footerP) {
-
-        
-        
+    public void searchP(JPanel headerL, JPanel headerR, JPanel footerP) {  
+    	
+    	Font titleFont = new Font("Arial", Font.BOLD, 14);
         history.add("search");
-
+        
+        String keyword = activeUser.getLastSearch();
+        
         headerL.setLayout(new FlowLayout(FlowLayout.LEFT));
         footerP.setLayout(new BorderLayout());
 
@@ -1784,25 +1851,212 @@ public class GUI {
         JLabel header = new JLabel("Search");
         header.setFont(headerFont);
         headerL.add(header);
+        
+        JTextField searchField = new JTextField();
+        JPanel searchPanel = new JPanel(new BorderLayout());
+        
+        ArrayList<Contact> foundContactsName = new ArrayList<Contact>();
+        ArrayList<Contact> foundContactsUser = new ArrayList<Contact>();
+        ArrayList<Chat> foundChats = new ArrayList<Chat>();
+        ArrayList<Message> foundMessages = new ArrayList<Message>();
+        
+        searchField.setText(keyword);    
+        
+        if (!keyword.isBlank())
+        {
+        	foundContactsName = activeUser.searchContacts(keyword, 0);
+        	foundContactsUser = activeUser.searchContacts(keyword, 1);
+        	foundChats = activeUser.searchChats(keyword);
+        	foundMessages = activeUser.searchMessages(keyword);
+        }
+        
+        JPanel resCon = new JPanel();
+        resCon.setLayout(new BoxLayout(resCon, BoxLayout.Y_AXIS));
+        
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.add(resCon, BorderLayout.NORTH);
+        
+        JScrollPane scroll = new JScrollPane(wrapper);
+       
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        
+        if (!foundContactsUser.isEmpty()) {
+        
+        	JLabel contactNameH = new JLabel("Contacts (By Name): ");
+        	contactNameH.setFont(titleFont);
+       		resCon.add(contactNameH);
+       	
+       		for (Contact contact : foundContactsName) { 
+       		
+       			JButton contactBtn = new JButton(contact.getName());
 
-        JButton newCon = new JButton("Search");
-        newCon.addActionListener(new ActionListener() {
+       			contactBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+       			contactBtn.setPreferredSize(new Dimension(0, 40));
+       			contactBtn.setMinimumSize(new Dimension(0, 40));
+       			contactBtn.setMaximumSize(new Dimension(Short.MAX_VALUE, 40));
+
+       			contactBtn.addActionListener(f -> {
+       				contactsD(headerL, headerR, footerP, contact);
+       			});
+
+       			resCon.add(contactBtn);
+       		}
+       	
+        }
+       	
+        if (!foundContactsUser.isEmpty()) {
+        
+        	JLabel contactUserH = new JLabel("Contacts (By Username): ");
+        	contactUserH.setFont(titleFont);
+        	resCon.add(contactUserH);
+       
+        	for (Contact contact : foundContactsUser) { 
+
+        		JButton contactBtn = new JButton(contact.getName());
+
+        		contactBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+        		contactBtn.setPreferredSize(new Dimension(0, 40));
+        		contactBtn.setMinimumSize(new Dimension(0, 40));
+        		contactBtn.setMaximumSize(new Dimension(Short.MAX_VALUE, 40));
+
+        		contactBtn.addActionListener(f -> {
+        			contactsD(headerL, headerR, footerP, contact);
+        		});
+
+        		resCon.add(contactBtn);
+        	}
+        }
+        
+        if (!foundChats.isEmpty()) {
+        
+        	JLabel chatH = new JLabel("Chats: ");
+        	chatH.setFont(titleFont);
+        	resCon.add(chatH);
+       	
+        	for (Chat chat : foundChats) {
+       	
+        		chat.updateLastChanged();
+       	
+        		if (chat.getMessages().isEmpty()) {
+        			JButton openChat = new JButton(chat.getChatName());;
+        			openChat.setHorizontalAlignment(SwingConstants.LEFT);
+       			
+        			openChat.setAlignmentX(Component.LEFT_ALIGNMENT);
+        			openChat.setPreferredSize(new Dimension(0, 70));
+        			openChat.setMinimumSize(new Dimension(0, 70));
+        			openChat.setMaximumSize(new Dimension(Short.MAX_VALUE, 70));
+
+        			openChat.addActionListener(g -> {
+        				chatP(headerL, headerR, footerP, chat);
+        			});
+        			resCon.add(openChat);
+        			continue;
+        		}    
+        		Message message = chat.getMessages().getLast();
+       	
+        		JButton chatPreview = new JButton();
+           
+        		String sentBy = "";
+        		String read = "";
+           
+        		if (message.getSentBy().equals(activeUser)) {
+        			sentBy = "You";
+        			if (message.isRead()) {
+        				read = "read";
+        			}
+        			else {
+        				read = "unread";
+        			}
+        		}
+        		else {
+        			sentBy = message.getSentBy().getName();
+        		}
+           
+        		String timeSent = message.formatTime(message.getTimeOfMessage());
+           
+        		chatPreview.setText("<html>" + chat.getChatName() +  "<br>" + sentBy +  ": " + message.getContent() + "<br>" + timeSent + "<br>" + read + "</html>");
+        		chatPreview.setHorizontalAlignment(SwingConstants.LEFT);
+
+        		chatPreview.setAlignmentX(Component.LEFT_ALIGNMENT);
+        		chatPreview.setPreferredSize(new Dimension(0, 70));
+        		chatPreview.setMinimumSize(new Dimension(0, 70));
+        		chatPreview.setMaximumSize(new Dimension(Short.MAX_VALUE, 70));
+
+        		chatPreview.addActionListener(h -> {
+        			chatP(headerL, headerR, footerP, chat);
+        		});
+       	
+        		resCon.add(chatPreview);
+        	}
+        }
+       	
+        if (!foundMessages.isEmpty()) {
+        
+        	JLabel messageH = new JLabel("Messages: ");
+        	messageH.setFont(titleFont);
+        	resCon.add(messageH);
+       	
+        	for (Message message : foundMessages) {
+           	
+        		JButton chatPreview = new JButton();
+           
+        		String sentBy = "";
+        		String read = "";
+           
+        		if (message.getSentBy().equals(activeUser)) {
+        			sentBy = "You";
+        			if (message.isRead()) {
+        				read = "read";
+        			}
+        			else {
+        				read = "unread";
+        			}
+        		}
+        		else {
+        			sentBy = message.getSentBy().getName();
+        		}
+           
+        		String timeSent = message.formatTime(message.getTimeOfMessage());
+           
+        		chatPreview.setText("<html>" + message.getTempChat().getChatName() +  "<br>" + sentBy +  ": " + message.getContent() + "<br>" + timeSent + "<br>" + read + "</html>");
+        		chatPreview.setHorizontalAlignment(SwingConstants.LEFT);
+
+        		chatPreview.setAlignmentX(Component.LEFT_ALIGNMENT);
+        		chatPreview.setPreferredSize(new Dimension(0, 70));
+        		chatPreview.setMinimumSize(new Dimension(0, 70));
+        		chatPreview.setMaximumSize(new Dimension(Short.MAX_VALUE, 70));
+
+        		chatPreview.addActionListener(h -> {
+        			chatP(headerL, headerR, footerP, message.getTempChat());
+        		});
+       	
+        		resCon.add(chatPreview);
+        	}
+        }
+       
+       	
+    
+        
+        
+        searchPanel.add(searchField, BorderLayout.CENTER);
+        
+        searchPage.add(scroll);
+        searchPage.add(searchPanel, BorderLayout.NORTH);
+        
+        JButton search = new JButton("Search");
+        search.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //where the search for contacts method will be called
+            	
+            	activeUser.setLastSearch(searchField.getText());
+            	
+            	history.pop();
+            	searchPage.removeAll();
+            	searchP(headerL, headerR, footerP);
+            	
             }
         });
-        footerP.add(newCon, BorderLayout.CENTER);
-
-        JPanel sortH = new JPanel(new BorderLayout());
-        JTextField alphaSort = new JTextField();
-
-        sortH.add(alphaSort, BorderLayout.CENTER);
-        newChats.add(sortH, BorderLayout.NORTH);
-
-        searchPage.add(sortH, BorderLayout.NORTH);
-
-        JPanel resCon = new JPanel(new GridLayout(20,1));
-        searchPage.add(resCon);
+        footerP.add(search, BorderLayout.CENTER);
 
         revNrep(headerL);
         revNrep(headerR);
@@ -1815,5 +2069,37 @@ public class GUI {
     public void revNrep(JPanel panel) {
         panel.revalidate();
         panel.repaint();
+    }
+    
+    public void save(String filename) {
+    	// try to set up output stream to filename
+	    try (ObjectOutputStream out =
+	             new ObjectOutputStream(new FileOutputStream(filename))) {
+	    	
+	    	ArrayList<User> users = new ArrayList<User>();
+	    	users.add(activeUser);
+	    	users.add(secondUser);
+	        out.writeObject(users);
+	    }
+	    // catch errors
+	    catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	}
+    
+    public void load(String filename) {
+    	try (ObjectInputStream in =
+    			new ObjectInputStream(new FileInputStream(filename))) {
+    		
+    		ArrayList<User> users = new ArrayList<User>();
+	    
+    		users = (ArrayList<User>) in.readObject();
+    		activeUser = users.getFirst();
+    		secondUser = users.getLast();
+	    }
+	    // catch errors
+	    catch (IOException | ClassNotFoundException e) {
+	        e.printStackTrace();
+	    }
     }
 }
