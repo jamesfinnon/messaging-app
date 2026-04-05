@@ -977,7 +977,7 @@ public class GUI {
       
         for (int i = 0; i < activeUser.getContactsSize(); i++) {
 
-            var contactObj = activeUser.getContacts().get(i); 
+            Contact contactObj = activeUser.getContacts().get(i); 
 
             JButton contactBtn = new JButton(contactObj.getName());
 
@@ -1795,7 +1795,7 @@ public class GUI {
       
         for (int i = 0; i < activeUser.getContactsSize(); i++) {
 
-        	var contactObj = activeUser.getContacts().get(i); 
+        	Contact contactObj = activeUser.getContacts().get(i); 
 
             JButton contactBtn = new JButton(contactObj.getName());
 
