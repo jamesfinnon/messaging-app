@@ -322,6 +322,7 @@ public class GUI {
         		openChat.setMaximumSize(new Dimension(Short.MAX_VALUE, 70));
 
         		openChat.addActionListener(e -> {
+        			activeUser.setCurrentChat(chat);
                     chatP(headerL, headerR, footerP, chat);
                 });
         		resCon.add(openChat);
